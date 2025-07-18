@@ -82,7 +82,7 @@ export const useTagStore = create<{
   /** Updates the children of a tag. */
   updateChildren: (children: TagChildren) => void
 }>()((set, get) => ({
-  page: { name: "Home", root: { id: 0 } },
+  page: { name: "Home", root: { id: getNewId() } },
 
   setSelectedTag(id) {
     const { page } = get()
@@ -108,7 +108,7 @@ export const useTagStore = create<{
 
   unWrap() {
     const { page, selectedTag } = get()
-    if (!selectedTag) return
+    if (!selectedTag || page.root.id === selectedTag.id) return
     const { id } = selectedTag
     const parentTag = findParentTag(id, page.root)
     if (
@@ -140,7 +140,7 @@ export const useTagStore = create<{
 
   deleteTag() {
     const { page, selectedTag } = get()
-    if (!selectedTag) return
+    if (!selectedTag || page.root.id === selectedTag.id) return
     const { id } = selectedTag
     const parentTag = findParentTag(id, page.root)
     if (!parentTag || !parentTag.children || !("tags" in parentTag.children))
