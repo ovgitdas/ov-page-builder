@@ -1,17 +1,18 @@
-import React from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { FaTrash, FaArrowUp, FaArrowDown } from "react-icons/fa"
-import { LinkImage } from "./tag"
+"use client";
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { FaTrash, FaArrowUp, FaArrowDown } from "react-icons/fa";
+import { LinkImage } from "./tag";
 
 interface LinkImageInputProps {
-  linkImage: LinkImage
-  index: number
-  totalImages: number
-  onImageChange: (index: number, field: keyof LinkImage, value: string) => void
-  onDeleteImage: (index: number) => void
-  onMoveImage: (index: number, direction: "up" | "down") => void
+  linkImage: LinkImage;
+  index: number;
+  totalImages: number;
+  onImageChange: (index: number, field: keyof LinkImage, value: string) => void;
+  onDeleteImage: (index: number) => void;
+  onMoveImage: (index: number, direction: "up" | "down") => void;
 }
 
 export const LinkImageInput: React.FC<LinkImageInputProps> = ({
@@ -83,5 +84,5 @@ export const LinkImageInput: React.FC<LinkImageInputProps> = ({
         />
       </div>
     </div>
-  )
-}
+  );
+};

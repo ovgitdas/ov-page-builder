@@ -4,31 +4,31 @@
  * for manipulating the state, such as selecting a tag or updating its properties.
  */
 
-import { create } from "zustand"
-import { Page, Tag, TagChildren, TagChildrenType } from "./tag"
+import { create } from "zustand";
+import { Page, Tag, TagChildren, TagChildrenType } from "./tag";
 
 const findTag = (id: number, tags: Array<Tag>): Tag | null => {
-  if (!id || !tags) return null
+  if (!id || !tags) return null;
   for (const tag of tags) {
-    if (tag.id === id) return tag
+    if (tag.id === id) return tag;
     if (!!tag.children && "tags" in tag.children) {
-      const found = findTag(id, tag.children.tags)
-      if (found) return found
+      const found = findTag(id, tag.children.tags);
+      if (found) return found;
     }
   }
-  return null // Tag not found
-}
+  return null; // Tag not found
+};
 
 const findParentTag = (childId: number, parentTag: Tag): Tag | null => {
   if (!childId || !parentTag.children || !("tags" in parentTag.children))
-    return null
+    return null;
   for (const child of parentTag.children.tags) {
-    if (child.id === childId) return parentTag
-    const found = findParentTag(childId, child)
-    if (!!found) return found
+    if (child.id === childId) return parentTag;
+    const found = findParentTag(childId, child);
+    if (!!found) return found;
   }
-  return null // Tag not found
-}
+  return null; // Tag not found
+};
 
 /**
  * Generates a new unique ID for a tag.
@@ -37,21 +37,25 @@ const findParentTag = (childId: number, parentTag: Tag): Tag | null => {
  * @returns {number} A new unique ID.
  */
 const getNewId = (): number => {
-  return +`${new Date().getTime()}${Math.ceil(Math.random() * 100)}`
-}
+  return +`${new Date().getTime()}${Math.ceil(Math.random() * 100)}`;
+};
 
 const cloneTag = (tag: Tag): Tag => ({
   id: getNewId(),
+  name: `Copy of ${tag.name}`,
   children: !!tag.children
     ? "tags" in tag.children
       ? tag.children.tags.map(cloneTag)
       : JSON.parse(JSON.stringify(tag.children))
     : undefined,
-  className: !!tag.className
-    ? JSON.parse(JSON.stringify(tag.className))
-    : undefined,
   style: !!tag.style ? JSON.parse(JSON.stringify(tag.style)) : undefined,
-})
+  mobStyle: !!tag.mobStyle
+    ? JSON.parse(JSON.stringify(tag.mobStyle))
+    : undefined,
+  tabStyle: !!tag.tabStyle
+    ? JSON.parse(JSON.stringify(tag.tabStyle))
+    : undefined,
+});
 
 /**
  * `useTagStore` is a custom hook for accessing the tag builder's state and actions.
@@ -60,170 +64,258 @@ const cloneTag = (tag: Tag): Tag => ({
  *
  */
 export const useTagStore = create<{
-  page: Page
-  selectedTag?: Tag
+  page: Page;
+  selectedTag: Tag | null;
+  history: Array<{ page: Page; selectedTag: Tag | null }>;
+  undo_history: Array<{ page: Page; selectedTag: Tag | null }>;
 
-  setSelectedTag: (id?: number) => void
+  setSelectedTag: (id?: number) => void;
+  setName(name: string): void;
+  undo(): void;
+  redo(): void;
+
   /** Actions for manipulating the page structure */
   /** Wraps a tag in a new tag, creating a parent-child relationship. */
-  wrap: () => void
+  wrap: () => void;
   /** Unwraps a tag, moving it out of its parent tag. */
-  unWrap: () => void
+  unWrap: () => void;
   /** Deletes a tag from the page structure. */
-  deleteTag: () => void
+  deleteTag: () => void;
   /** Appends a new tag as a child of the specified tag. */
-  append: () => void
-  /** Sets the className for a tag. */
-  setClassName: (className: string) => void
+  append: () => void;
+  /** Appends a new tag as a child of the specified tag. */
+  clone: () => void;
   /** Sets the style for a tag. */
-  setStyle: (style: string) => void
+  setStyle: (style: string, device?: "mob" | "tab") => void;
   /** Changes the type of children for a tag. */
-  changeChildrenType: (type: TagChildrenType) => void
+  changeChildrenType: (type: TagChildrenType) => void;
   /** Updates the children of a tag. */
-  updateChildren: (children: TagChildren) => void
+  updateChildren: (children: TagChildren) => void;
 }>()((set, get) => ({
-  page: { name: "Home", root: { id: getNewId() } },
+  page: { name: "Home", root: { id: getNewId(), name: "root" } },
+  selectedTag: null,
+  history: [],
+  undo_history: [],
+
+  undo() {
+    const { history, page, selectedTag, undo_history } = get();
+    const _undo_history = JSON.parse(JSON.stringify({ page, selectedTag }));
+    if (history.length === 0) return;
+    const { page: _page, selectedTag: _selectedTag } = history.pop()!;
+    set({
+      page: _page,
+      selectedTag: _selectedTag,
+      undo_history: [...undo_history, _undo_history],
+      history: history,
+    });
+  },
+
+  redo() {
+    const { undo_history, page, selectedTag, history } = get();
+    const _history = JSON.parse(JSON.stringify({ page, selectedTag }));
+    if (undo_history.length === 0) return;
+    const { page: _page, selectedTag: _selectedTag } = undo_history.pop()!;
+    set({
+      page: _page,
+      selectedTag: _selectedTag,
+      history: [...history, _history],
+      undo_history: undo_history,
+    });
+  },
 
   setSelectedTag(id) {
-    const { page } = get()
+    const { page } = get();
     if (!id) {
-      set({ selectedTag: undefined })
-      return
+      set({ selectedTag: undefined });
+      return;
     }
-    const tag = findTag(id, [page.root])
-    if (!tag) return
-    set({ selectedTag: tag })
+    const tag = findTag(id, [page.root]);
+    if (!tag) return;
+    set({ selectedTag: tag });
+  },
+
+  setName(name: string) {
+    const { page, selectedTag } = get();
+    if (!selectedTag || page.root.id === selectedTag.id) return;
+    const { id } = selectedTag;
+    const tag = findTag(id, [page.root]);
+    if (!tag) return;
+    tag.name = name;
+    const _page = JSON.parse(JSON.stringify(page));
+    const _selectedTag = findTag(id, [_page.root]);
+    set({ page: _page, selectedTag: _selectedTag });
   },
 
   wrap() {
-    const { page, selectedTag } = get()
-    if (!selectedTag || page.root.id === selectedTag.id) return
-    const { id } = selectedTag
-    const tag = findTag(id, [page.root])
-    if (!tag) return
-    const tags = [JSON.parse(JSON.stringify(tag))]
-    ;(tag.id = getNewId()), (tag.children = { tags })
-    set({ page: JSON.parse(JSON.stringify(page)) })
+    const { page, selectedTag, history } = get();
+    const _history = JSON.parse(JSON.stringify({ page, selectedTag }));
+    if (!selectedTag || page.root.id === selectedTag.id) return;
+    const { id } = selectedTag;
+    const tag = findTag(id, [page.root]);
+    if (!tag) return;
+    const tags = [JSON.parse(JSON.stringify(tag))];
+    tag.id = getNewId();
+    tag.name = `New div ${tag.id}`;
+    tag.children = { tags };
+    const _page = JSON.parse(JSON.stringify(page));
+    const _selectedTag = findTag(id, [_page.root]);
+    set({
+      page: _page,
+      selectedTag: _selectedTag,
+      history: [...history, _history],
+    });
   },
 
   unWrap() {
-    const { page, selectedTag } = get()
-    if (!selectedTag || page.root.id === selectedTag.id) return
-    const { id } = selectedTag
-    const parentTag = findParentTag(id, page.root)
+    const { page, selectedTag, history } = get();
+    const _history = JSON.parse(JSON.stringify({ page, selectedTag }));
+    if (!selectedTag || page.root.id === selectedTag.id) return;
+    const { id } = selectedTag;
+    const parentTag = findParentTag(id, page.root);
     if (
       !parentTag ||
       parentTag.id === page.root.id ||
       !parentTag.children ||
       !("tags" in parentTag.children)
     )
-      return
-    const grandParentTag = findParentTag(parentTag.id, page.root)
+      return;
+    const grandParentTag = findParentTag(parentTag.id, page.root);
     if (
       !grandParentTag ||
       !grandParentTag.children ||
       !("tags" in grandParentTag.children)
     )
-      return
+      return;
     const index = grandParentTag.children.tags.findIndex(
       (tag) => tag.id === parentTag.id
-    )
-    if (index < 0) return
-    const tag = findTag(id, [page.root])
-    if (!tag) return
-    grandParentTag.children.tags.splice(index, 0, tag)
-    const index2 = parentTag.children.tags.findIndex((tag) => tag.id === id)
-    if (index2 < 0) return
-    parentTag.children.tags.splice(index2, 1)
-    set({ page: JSON.parse(JSON.stringify(page)) })
+    );
+    if (index < 0) return;
+    const tag = findTag(id, [page.root]);
+    if (!tag) return;
+    grandParentTag.children.tags.splice(index, 0, tag);
+    const index2 = parentTag.children.tags.findIndex((tag) => tag.id === id);
+    if (index2 < 0) return;
+    parentTag.children.tags.splice(index2, 1);
+    const _page = JSON.parse(JSON.stringify(page));
+    const _selectedTag = findTag(id, [_page.root]);
+    set({
+      page: _page,
+      selectedTag: _selectedTag,
+      history: [...history, _history],
+    });
   },
 
   deleteTag() {
-    const { page, selectedTag } = get()
-    if (!selectedTag || page.root.id === selectedTag.id) return
-    const { id } = selectedTag
-    const parentTag = findParentTag(id, page.root)
+    const { page, selectedTag, history } = get();
+    const _history = JSON.parse(JSON.stringify({ page, selectedTag }));
+    if (!selectedTag || page.root.id === selectedTag.id) return;
+    const { id } = selectedTag;
+    const parentTag = findParentTag(id, page.root);
     if (!parentTag || !parentTag.children || !("tags" in parentTag.children))
-      return
-    const index = parentTag.children.tags.findIndex((tag) => tag.id === id)
-    if (index < 0) return
-    parentTag.children.tags.splice(index, 1)
-    set({ page: JSON.parse(JSON.stringify(page)) })
+      return;
+    const index = parentTag.children.tags.findIndex((tag) => tag.id === id);
+    if (index < 0) return;
+    parentTag.children.tags.splice(index, 1);
+    const _page = JSON.parse(JSON.stringify(page));
+    const _selectedTag = findTag(parentTag.id, [_page.root]);
+    set({
+      page: _page,
+      selectedTag: _selectedTag,
+      history: [...history, _history],
+    });
   },
 
   append() {
-    const { page, selectedTag } = get()
-    if (!selectedTag) return
-    const { id } = selectedTag
-    const tag = findTag(id, [page.root])
-    if (!tag || !tag.children) return
+    const { page, selectedTag, history } = get();
+    const _history = JSON.parse(JSON.stringify({ page, selectedTag }));
+    if (!selectedTag) return;
+    const { id } = selectedTag;
+    const tag = findTag(id, [page.root]);
+    if (!tag || !tag.children) return;
     if ("tags" in tag.children) {
+      const newId = getNewId();
       tag.children.tags.push({
-        id: getNewId(),
-        children: { text: "New div" },
-        className:
-          "bg-white p-4 text-black rounded-md border-2 border-blue-600",
-      })
-      set({ page: JSON.parse(JSON.stringify(page)) })
+        id: newId,
+        name: `New div ${newId}`,
+        children: { text: `New div ${newId}` },
+      });
     } else if ("imageCarousel" in tag.children) {
       tag.children.imageCarousel.linkImages.push({
         src: "https://yourLink.com/image.jpg",
         alt: "Placeholder Image",
         href: "#",
-      })
-      set({ page: JSON.parse(JSON.stringify(page)) })
+      });
+    }
+    const _page = JSON.parse(JSON.stringify(page));
+    const _selectedTag = findTag(id, [_page.root]);
+    set({
+      page: _page,
+      selectedTag: _selectedTag,
+      history: [...history, _history],
+    });
+  },
+
+  clone() {
+    const { page, selectedTag, history } = get();
+    const _history = JSON.parse(JSON.stringify({ page, selectedTag }));
+    if (!selectedTag) return;
+    const { id } = selectedTag;
+    const parentTag = findParentTag(id, page.root);
+    if (!parentTag || !parentTag.children) return;
+    if ("tags" in parentTag.children) {
+      const clone = cloneTag(selectedTag);
+      parentTag.children.tags.push(clone);
+      const _page = JSON.parse(JSON.stringify(page));
+      const _selectedTag = findTag(id, [_page.root]);
+      set({
+        page: _page,
+        selectedTag: _selectedTag,
+        history: [...history, _history],
+      });
     }
   },
 
-  setClassName(className: string) {
-    const { page, selectedTag } = get()
-    if (!selectedTag) return
-    const { id } = selectedTag
-    const tag = findTag(id, [page.root])
-    if (!tag) return
-    tag.className = className || tag.className
-    // Zustand requires a new object for state changes to be detected
-    set({ page: JSON.parse(JSON.stringify(page)) })
-  },
-
-  setStyle(style: string) {
-    const { page, selectedTag } = get()
-    if (!selectedTag) return
-    const { id } = selectedTag
-    const tag = findTag(id, [page.root])
-    if (!tag) return
-    tag.style = style || tag.style
-    // Zustand requires a new object for state changes to be detected
-    set({ page: JSON.parse(JSON.stringify(page)) })
+  setStyle(style: string, device?: "mob" | "tab" | "pc") {
+    const { page, selectedTag } = get();
+    if (!selectedTag) return;
+    const { id } = selectedTag;
+    const tag = findTag(id, [page.root]);
+    if (!tag) return;
+    tag.style = !device ? style : tag.style;
+    tag.mobStyle = device === "mob" ? style : tag.mobStyle;
+    tag.tabStyle = device === "tab" ? style : tag.tabStyle;
+    const _page = JSON.parse(JSON.stringify(page));
+    const _selectedTag = findTag(id, [_page.root]);
+    set({ page: _page, selectedTag: _selectedTag });
   },
 
   changeChildrenType(type: TagChildrenType) {
-    const { page, selectedTag } = get()
-    if (!selectedTag) return
-    const { id } = selectedTag
-    const tag = findTag(id, [page.root])
-    if (!tag) return
+    const { page, selectedTag, history } = get();
+    const _history = JSON.parse(JSON.stringify({ page, selectedTag }));
+    if (!selectedTag) return;
+    const { id } = selectedTag;
+    const tag = findTag(id, [page.root]);
+    if (!tag) return;
     switch (type) {
       case "text":
-        if (!!tag.children && "text" in tag.children) return
-        tag.children = { text: "New text" }
-        tag.className = "bg-white p-4 text-black"
-        break
+        if (!!tag.children && "text" in tag.children) return;
+        tag.children = { text: "New text" };
+        break;
       case "tags":
-        if (!!tag.children && "tags" in tag.children) return
+        if (!!tag.children && "tags" in tag.children) return;
+        const newId = getNewId();
         tag.children = {
           tags: [
             {
-              id: getNewId(),
-              children: { text: "New div" },
-              className:
-                "bg-white p-4 text-black rounded-md border-2 border-blue-600",
+              id: newId,
+              name: `New div ${newId}`,
+              children: { text: `New div ${newId}` },
             },
           ],
-        }
-        break
+        };
+        break;
       case "imageCarousel":
-        if (!!tag.children && "imageCarousel" in tag.children) return
+        if (!!tag.children && "imageCarousel" in tag.children) return;
         tag.children = {
           imageCarousel: {
             linkImages: [
@@ -235,41 +327,49 @@ export const useTagStore = create<{
             ],
             showController: true,
           },
-        }
-        break
+        };
+        break;
       case "itemCarousel":
-        if (!!tag.children && "itemCarousel" in tag.children) return
+        if (!!tag.children && "itemCarousel" in tag.children) return;
         tag.children = {
           itemCarousel: {
             query: "SELECT * FROM item",
             cols: 3,
             showController: true,
           },
-        }
-        break
+        };
+        break;
       case "linkImage":
-        if (!!tag.children && "linkImage" in tag.children) return
+        if (!!tag.children && "linkImage" in tag.children) return;
         tag.children = {
           linkImage: {
             src: "https://yourLink.com/image.jpg",
             alt: "Placeholder Image",
             href: "#",
           },
-        }
-        break
+        };
+        break;
       default:
-        return // Invalid type, do nothing
+        return; // Invalid type, do nothing
     }
+    const _page = JSON.parse(JSON.stringify(page));
+    const _selectedTag = findTag(id, [_page.root]);
+    set({
+      page: _page,
+      selectedTag: _selectedTag,
+      history: [...history, _history],
+    });
   },
 
   updateChildren(children: TagChildren) {
-    const { page, selectedTag } = get()
-    if (!selectedTag) return
-    const { id } = selectedTag
-    const tag = findTag(id, [page.root])
-    if (!tag) return
-    tag.children = children
-    // Zustand requires a new object for state changes to be detected
-    set({ page: JSON.parse(JSON.stringify(page)) })
+    const { page, selectedTag } = get();
+    if (!selectedTag) return;
+    const { id } = selectedTag;
+    const tag = findTag(id, [page.root]);
+    if (!tag) return;
+    tag.children = children;
+    const _page = JSON.parse(JSON.stringify(page));
+    const _selectedTag = findTag(id, [_page.root]);
+    set({ page: _page, selectedTag: _selectedTag });
   },
-}))
+}));

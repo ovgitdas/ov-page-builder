@@ -2,12 +2,12 @@
  * @fileoverview Defines the `TagNavNode` component, a recursive component used to display
  * a single node in the tag hierarchy within the Tag Builder's navigation panel.
  */
-"use client"
-import React, { useState } from "react"
-import { Tag } from "./tag"
-import { useTagStore } from "./tag_zustand"
-import { cn } from "@/lib/utils"
-import { ChevronDown, ChevronRight } from "lucide-react"
+"use client";
+import React, { useState } from "react";
+import { Tag } from "./tag";
+import { useTagStore } from "./tag_zustand";
+import { cn } from "@/lib/utils";
+import { ChevronDown, ChevronRight } from "lucide-react";
 
 /**
  * Props for the TagNavNode component.
@@ -15,9 +15,9 @@ import { ChevronDown, ChevronRight } from "lucide-react"
  */
 interface TagNavNodeProps {
   /** The tag object to render. */
-  tag: Tag
+  tag: Tag;
   /** The nesting level of the tag, used for indentation. */
-  level: number
+  level: number;
 }
 
 /**
@@ -30,38 +30,26 @@ interface TagNavNodeProps {
  * @returns {JSX.Element | null} The rendered TagNavNode component or null if tag is invalid.
  */
 export const TagNavNode: React.FC<TagNavNodeProps> = ({ tag, level }) => {
-  const { selectedTag, setSelectedTag } = useTagStore()
-  const [isExpanded, setIsExpanded] = useState(true) // Default to expanded
+  const { selectedTag, setSelectedTag } = useTagStore();
+  const [isExpanded, setIsExpanded] = useState(true); // Default to expanded
 
   if (!tag) {
-    return null
+    return null;
   }
 
   /** Determines if the current node is the selected one in the store. */
-  const isSelected = selectedTag === tag
+  const isSelected = selectedTag === tag;
 
   const hasChildren =
     !!tag.children &&
     "tags" in tag.children &&
     Array.isArray(tag.children.tags) &&
-    tag.children.tags.length > 0
-
-  /**
-   * A helper function to determine the display name of a tag.
-   * @param {Tag} t - The tag to analyze.
-   * @returns {string} 'div' for a container tag, or 'item' for a leaf tag.
-   */
-  const getTagName = (t: Tag) => {
-    if (t.children && "tags" in t.children) {
-      return "div"
-    }
-    return "item"
-  }
+    tag.children.tags.length > 0;
 
   const handleToggleExpand = (e: React.MouseEvent) => {
-    e.stopPropagation() // Prevent the setSelectedTag from firing when clicking the icon
-    setIsExpanded(!isExpanded)
-  }
+    e.stopPropagation(); // Prevent the setSelectedTag from firing when clicking the icon
+    setIsExpanded(!isExpanded);
+  };
 
   return (
     <div style={{ paddingLeft: `${level * 16}px` }}>
@@ -85,7 +73,7 @@ export const TagNavNode: React.FC<TagNavNodeProps> = ({ tag, level }) => {
         ) : (
           <div className="w-[20px]" /> // Placeholder for alignment
         )}
-        <span>{getTagName(tag)}</span>
+        <span>{tag.name.trim() || "div"}</span>
       </div>
       {hasChildren && isExpanded && tag.children && "tags" in tag.children && (
         <div>
@@ -95,5 +83,5 @@ export const TagNavNode: React.FC<TagNavNodeProps> = ({ tag, level }) => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
