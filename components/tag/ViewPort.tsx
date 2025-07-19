@@ -2,6 +2,7 @@
 import React from "react";
 import { useViewPort } from "./viewport_zustand";
 import { Button } from "../ui/button";
+import { useTagStore } from "./tag_zustand";
 
 const ViewPort = ({ children }: any) => {
   const { deviceType, setDeviceType, width, height } = useViewPort();
@@ -16,13 +17,18 @@ const ViewPort = ({ children }: any) => {
     }
   }, [deviceType]);
 
+  const [code, setCode] = React.useState(false);
+  const { page } = useTagStore();
+
   return (
     <div>
       <div className="flex gap-2 justify-between">
-        <h2 className="text-2xl font-bold mb-4">View [{zoom}%]</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          {code ? "Source code" : `View [${zoom}%]`}
+        </h2>
         <div className="flex gap-2">
           <Button
-            disabled={deviceType === "pc"}
+            disabled={code || deviceType === "pc"}
             onClick={() => {
               setDeviceType("pc");
               setZoom(50);
@@ -31,7 +37,7 @@ const ViewPort = ({ children }: any) => {
             PC
           </Button>
           <Button
-            disabled={deviceType === "tab"}
+            disabled={code || deviceType === "tab"}
             onClick={() => {
               setDeviceType("tab");
               setZoom(70);
@@ -40,7 +46,7 @@ const ViewPort = ({ children }: any) => {
             Tab
           </Button>
           <Button
-            disabled={deviceType === "mob"}
+            disabled={code || deviceType === "mob"}
             onClick={() => {
               setDeviceType("mob");
               setZoom(90);
@@ -49,31 +55,46 @@ const ViewPort = ({ children }: any) => {
             Mob
           </Button>
         </div>
+        <div>
+          <Button onClick={() => setCode(!code)}>
+            {code ? "Show UX/UI" : "Show Code"}
+          </Button>
+        </div>
         <div className="flex gap-2">
-          <Button disabled={zoom === 50} onClick={() => setZoom(zoom - 10)}>
+          <Button
+            disabled={code || zoom === 50}
+            onClick={() => setZoom(zoom - 10)}
+          >
             Zoom out
           </Button>
-          <Button disabled={zoom === 150} onClick={() => setZoom(zoom + 10)}>
+          <Button
+            disabled={code || zoom === 150}
+            onClick={() => setZoom(zoom + 10)}
+          >
             Zoom in
           </Button>
         </div>
       </div>
-      <div
-        className="bg-slate-400 rounded-md p-4 w-fit absolute duration-300 ease-in"
-        style={{
-          left: position.left,
-          top: position.top,
-          scale: zoom / 100,
-        }}
-        draggable
-      >
+      {code ? (
+        <div>{JSON.stringify(page)}</div>
+      ) : (
         <div
-          style={{ width: width, height: height }}
-          className="bg-white rounded-sm overflow-auto"
+          className="bg-slate-400 rounded-md p-4 w-fit absolute duration-300 ease-in"
+          style={{
+            left: position.left,
+            top: position.top,
+            scale: zoom / 100,
+          }}
+          draggable
         >
-          {children}
+          <div
+            style={{ width: width, height: height }}
+            className="bg-white rounded-sm overflow-auto"
+          >
+            {children}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
