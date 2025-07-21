@@ -6,8 +6,11 @@ export type DeviceType = "pc" | "mob" | "tab" | "wide" | "ultra"
 
 /**
  * Determines the device type (PC, Mobile, Tablet, Wide, or Ultrawide)
- * based on screen width, height, and calculated aspect ratio.
- * This provides a more nuanced classification than width alone.
+ * based primarily on screen width, with some height considerations for mobile/tablet.
+ * This version does NOT use aspect ratio for classification.
+ *
+ * It first categorizes based on orientation (landscape/square vs. portrait)
+ * and then applies min/max width/height constraints.
  *
  * It incorporates a specific rule: if a tablet's resolution is equivalent to
  * a common PC resolution, it will be classified as 'pc', 'wide', or 'ultra' accordingly.
@@ -25,83 +28,75 @@ function getDeviceType(width: number, height: number): DeviceType {
     return "pc" // Default to PC for invalid input or handle as an error
   }
 
-  const aspectRatio = width / height
-
-  // Define breakpoints for device classification.
-  // These values are based on widely adopted responsive design breakpoints
-  // and common aspect ratios.
-
-  // --- Aspect Ratio Thresholds ---
-  // Standard (16:9) ≈ 1.77
-  // Standard (16:10) ≈ 1.6
-  // Wide (21:9) ≈ 2.33
-  // Ultrawide (32:9) ≈ 3.55
-
-  // ASPECT_RATIO_WIDE_MIN is for aspect ratios like 21:9 (approx 2.33)
-  const ASPECT_RATIO_WIDE_MIN = 1.9 // Catches aspect ratios wider than typical 16:9, e.g., 21:9 (2.33)
-  // ASPECT_RATIO_SUPER_ULTRA_WIDE_MIN is for aspect ratios like 32:9 (approx 3.55)
-  const ASPECT_RATIO_SUPER_ULTRA_WIDE_MIN = 3.0 // Catches truly super ultrawide aspect ratios
-
   // --- Width and Height Breakpoints ---
   const MOBILE_MAX_WIDTH = 767
-  const MOBILE_MAX_HEIGHT = 899 // Prevents large phones in landscape from being 'tab' prematurely
+  const MOBILE_MAX_HEIGHT_PORTRAIT = 899 // Max height for typical portrait phones
 
-  const TABLET_MIN_WIDTH = 768 // Minimum width for tablets (consistent definition)
-  const TABLET_MAX_WIDTH = 1023 // Max width for typical portrait tablets
+  const TABLET_MIN_WIDTH = 768 // Minimum width for tablets
+  const TABLET_MAX_WIDTH_PORTRAIT = 1023 // Max width for typical portrait tablets
   const TABLET_MAX_HEIGHT_PORTRAIT = 1367 // Max height for typical portrait tablets (e.g., iPad Pro 12.9" is 1366px high)
 
-  const PC_STANDARD_MIN_WIDTH = 1024 // Minimum width for any desktop-like screen
+  const PC_STANDARD_MIN_WIDTH = 1024 // Minimum width for standard PC/laptop screens
+  const WIDE_SCREEN_MIN_WIDTH = 1920 // Minimum width for wide screens (e.g., Full HD and above)
+  const ULTRA_WIDE_SCREEN_MIN_WIDTH = 3440 // Minimum width for ultra screens (e.g., 3440x1440, 3840x1080)
 
-  // --- Classification Logic ---
-  // The order of checks is important to ensure more specific categories are caught first.
+  // --- Classification Logic: First by Orientation ---
 
-  // 1. Mobile Device (MOB):
-  // Narrow width AND relatively short height (for portrait phones).
-  // Also catches most phones in landscape due to the MOBILE_MAX_HEIGHT.
-  if (width <= MOBILE_MAX_WIDTH && height <= MOBILE_MAX_HEIGHT) {
-    return "mob"
-  }
+  // Scenario 1: Landscape or Square-ish orientation (width >= height)
+  if (width >= height) {
+    // Check for ultra screens first based purely on width
+    if (width >= ULTRA_WIDE_SCREEN_MIN_WIDTH) {
+      return "ultra"
+    }
 
-  // 2. Tablet Device (TAB):
-  // Medium width AND relatively standard aspect ratio for its size.
-  // This handles tablets primarily in portrait. Tablets in landscape might fall into 'pc' or 'wide'
-  // based on their width and aspect ratio, adhering to the rule.
-  if (
-    width >= TABLET_MIN_WIDTH &&
-    width <= TABLET_MAX_WIDTH &&
-    height <= TABLET_MAX_HEIGHT_PORTRAIT
-  ) {
+    // Check for wide screens based purely on width
+    if (width >= WIDE_SCREEN_MIN_WIDTH) {
+      return "wide"
+    }
+
+    // If not ultra or wide, but still desktop-class width, it's a standard PC.
+    // This includes standard laptops and desktop monitors, and also tablets in landscape
+    // that have widths similar to smaller PCs (e.g., 1280x800).
+    if (width >= PC_STANDARD_MIN_WIDTH) {
+      return "pc"
+    }
+
+    // Fallback for smaller landscape devices (phones/small tablets in landscape)
+    // If it's not desktop-class width, it's likely a mobile or tablet device in landscape.
+    if (width <= MOBILE_MAX_WIDTH) {
+      // Check if it's within mobile width range
+      return "mob"
+    }
+    // If it's wider than mobile but not desktop-class, it's likely a tablet in landscape
+    if (width >= TABLET_MIN_WIDTH && width < PC_STANDARD_MIN_WIDTH) {
+      return "tab"
+    }
+    // Final fallback for landscape if none above matched (should be rare)
+    return "pc" // Default to PC for any unexpected large landscape width
+  } else {
+    // Scenario 2: Portrait orientation (width < height)
+    // Mobile Device (MOB):
+    // Narrow width AND relatively short height (for typical portrait phones).
+    if (width <= MOBILE_MAX_WIDTH && height <= MOBILE_MAX_HEIGHT_PORTRAIT) {
+      return "mob"
+    }
+
+    // Tablet Device (TAB):
+    // Medium width and portrait orientation.
+    if (
+      width >= TABLET_MIN_WIDTH &&
+      width <= TABLET_MAX_WIDTH_PORTRAIT &&
+      height <= TABLET_MAX_HEIGHT_PORTRAIT
+    ) {
+      return "tab"
+    }
+
+    // Fallback for very tall, narrow screens that don't fit typical mobile/tablet.
+    // This might catch unusual devices or very large tablets in portrait that
+    // exceed the tablet max width (e.g., a future very large tablet).
+    // Defaulting to 'tab' as it's still a portrait-first device.
     return "tab"
   }
-
-  // 3. Super Ultrawide Screen (ultra):
-  // Primarily identified by a very high aspect ratio (e.g., 32:9).
-  // This must come before 'wide' to catch the most extreme aspect ratios.
-  if (aspectRatio >= ASPECT_RATIO_SUPER_ULTRA_WIDE_MIN) {
-    return "ultra"
-  }
-
-  // 4. Wide Screen (WIDE):
-  // Identified by a wider aspect ratio (e.g., 21:9) OR a large standard width (e.g., 1920px+ for 16:9).
-  // This catches 21:9 monitors (via aspectRatio >= ASPECT_RATIO_WIDE_MIN)
-  // and large 16:9 monitors/laptops (1920x1080, 2560x1440, 4K, 5K, 8K) via width >= 1920.
-  // It must NOT be a super ultrawide (handled by the previous check).
-  if (aspectRatio >= ASPECT_RATIO_WIDE_MIN || width >= 1920) {
-    return "wide"
-  }
-
-  // 5. PC (Standard Desktop/Laptop):
-  // This is the default for any screen that is not mobile, tablet, wide, or ultra,
-  // but is still large enough to be considered a desktop experience.
-  // This will catch resolutions like 1024x768, 1280x1024, 1280x800, 1366x768, 1536x864, 1600x900.
-  // It must come after more specific large screen types.
-  if (width >= PC_STANDARD_MIN_WIDTH) {
-    return "pc"
-  }
-
-  // Fallback for any unclassified dimensions (should be rare with these ranges).
-  // This might catch very unusual or very small desktop-like resolutions not covered.
-  return "pc" // Default to PC
 }
 
 export const useViewPort = create<{

@@ -113,7 +113,6 @@ export const TagProperties = () => {
         <div>
           <Label htmlFor="style">PC Style</Label>
           <Textarea
-            disabled={deviceType === "pc"}
             id="style"
             value={selectedTag.pcStyle || ""}
             onChange={(e) => setStyle(e.target.value, "pc")}
