@@ -1,37 +1,62 @@
-"use client";
-import React from "react";
-import { useViewPort } from "./viewport_zustand";
-import { Button } from "../ui/button";
-import { useTagStore } from "./tag_zustand";
+"use client"
+import React from "react"
+import { useViewPort } from "./viewport_zustand"
+import { Button } from "../ui/button"
+import { useTagStore } from "./tag_zustand"
 
 const ViewPort = ({ children }: any) => {
-  const { deviceType, setDeviceType, width, height } = useViewPort();
-  const [zoom, setZoom] = React.useState(50);
-  const [position, setPosition] = React.useState({ left: 0, top: 0 });
-  React.useEffect(() => {
+  const { deviceType, setDeviceType, width, height } = useViewPort()
+  const [zoom, setZoom] = React.useState(50)
+  const [position, setPosition] = React.useState({ left: 0, top: 0 })
+  const handleResize = () => {
     if (typeof window !== "undefined") {
       setPosition({
-        left: (window.innerWidth - width) / 2,
-        top: (window.innerHeight - height) / 2,
-      });
+        left: (window.innerWidth - width) / 2 - 15,
+        top: (window.innerHeight - height) / 2 - 15,
+      })
+      if (deviceType === "pc") {
+        // since view area is 3/5 of the screen width
+        setZoom(
+          (((((3 * window.innerWidth) / (5 * width)) * 100) / 10) | 0) * 10
+        )
+      } else {
+        setZoom(
+          (((((8 * window.innerHeight) / (10 * height)) * 100) / 10) | 0) * 10
+        )
+      }
     }
-  }, [deviceType]);
+  }
+  React.useEffect(() => {
+    window.addEventListener("resize", handleResize)
+    handleResize()
+    return () => {
+      window.removeEventListener("resize", handleResize)
+    }
+  }, [deviceType])
 
-  const [code, setCode] = React.useState(false);
-  const { page } = useTagStore();
+  const [code, setCode] = React.useState(false)
+  const { page } = useTagStore()
 
   return (
     <div>
       <div className="flex gap-2 justify-between">
         <h2 className="text-2xl font-bold mb-4">
-          {code ? "Source code" : `View [${zoom}%]`}
+          {code
+            ? "Source code"
+            : `${
+                deviceType === "pc"
+                  ? "PC Screen"
+                  : deviceType === "tab"
+                  ? "Tablet Screen"
+                  : "Smartphone Screen"
+              } [${zoom}%]`}
         </h2>
         <div className="flex gap-2">
           <Button
             disabled={code || deviceType === "pc"}
             onClick={() => {
-              setDeviceType("pc");
-              setZoom(50);
+              setDeviceType("pc")
+              setZoom(50)
             }}
           >
             PC
@@ -39,8 +64,8 @@ const ViewPort = ({ children }: any) => {
           <Button
             disabled={code || deviceType === "tab"}
             onClick={() => {
-              setDeviceType("tab");
-              setZoom(70);
+              setDeviceType("tab")
+              setZoom(70)
             }}
           >
             Tab
@@ -48,8 +73,8 @@ const ViewPort = ({ children }: any) => {
           <Button
             disabled={code || deviceType === "mob"}
             onClick={() => {
-              setDeviceType("mob");
-              setZoom(90);
+              setDeviceType("mob")
+              setZoom(90)
             }}
           >
             Mob
@@ -96,7 +121,7 @@ const ViewPort = ({ children }: any) => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default ViewPort;
+export default ViewPort
