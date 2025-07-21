@@ -4,7 +4,7 @@
 "use client"
 import React from "react"
 import { ItemCarousel } from "./tag"
-import { Input } from "@/components/ui/input"
+import { Textarea } from "../ui/textarea"
 import { Label } from "@/components/ui/label"
 import {
   Select,
@@ -24,7 +24,7 @@ const ItemCarouselForm: React.FC<ItemCarouselFormProps> = ({
   carousel,
   onUpdate,
 }) => {
-  const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleQueryChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     onUpdate({ ...carousel, query: e.target.value })
   }
 
@@ -41,11 +41,12 @@ const ItemCarouselForm: React.FC<ItemCarouselFormProps> = ({
     <div className="space-y-4">
       <div>
         <Label htmlFor="item-carousel-query">Query</Label>
-        <Input
+        <Textarea
           id="item-carousel-query"
           value={carousel.query}
           onChange={handleQueryChange}
           placeholder="Enter SQL query"
+          className="bg-white"
         />
       </div>
       <div>

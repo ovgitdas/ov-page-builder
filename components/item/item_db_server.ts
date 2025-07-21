@@ -21,12 +21,12 @@ export const _loadItems = async (query: string): Promise<Array<Itemx>> => {
     const itemxs: Array<Itemx> = items.map((item) => ({
       ...item,
       images: [],
-    })) as any
+    })) as unknown as Array<Itemx>
     const images: Array<ItemImage> = (await execute(
       `SELECT * FROM item_image WHERE item_id IN (${itemxs
         .map((item) => `'${item.item_id}'`)
         .join(",")})`
-    )) as any
+    )) as unknown as Array<ItemImage>
     for (const image of images) {
       const index = itemxs.findIndex((item) => item.item_id === image.item_id)
       if (index >= 0) {

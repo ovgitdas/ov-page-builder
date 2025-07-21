@@ -1,4 +1,4 @@
-"use client";
+"use client"
 /**
  * @fileoverview This file contains the logic for recursively generating React components
  * from a structured `Tag` data object. This generator is the core of the dynamic page rendering engine,
@@ -6,17 +6,17 @@
  * (which can contain text, other tags, or specialized components), `Link` with `Image`, and carousel components.
  */
 
-import React from "react";
-import { Tag } from "./tag";
-import Link from "next/link";
-import Image from "next/image";
-import ImageCarouselComponent from "./ImageCarouselComponent";
-import ItemCarouselComponent from "./ItemCarouselComponent";
-import { useViewPort } from "./viewport_zustand";
-import { useTagStore } from "./tag_zustand";
+import React from "react"
+import { Tag } from "./tag"
+import Link from "next/link"
+import Image from "next/image"
+import ImageCarouselComponent from "./ImageCarouselComponent"
+import ItemCarouselComponent from "./ItemCarouselComponent"
+import { useViewPort } from "./viewport_zustand"
+import { getStyle, useTagStore } from "./tag_zustand"
 
 interface TagNodeProps {
-  tag: Tag;
+  tag: Tag
 }
 
 /**
@@ -32,26 +32,17 @@ interface TagNodeProps {
  * @returns The rendered tag node as a React element.
  */
 const TagNode = ({ tag }: TagNodeProps) => {
-  const ref = React.useRef<HTMLDivElement>(null);
-  const { deviceType } = useViewPort();
-  const { selectedTag } = useTagStore();
-  const isSelected = !!selectedTag && selectedTag.id === tag.id;
+  const ref = React.useRef<HTMLDivElement>(null)
+  const { deviceType } = useViewPort()
+  const { selectedTag } = useTagStore()
+  const isSelected = !!selectedTag && selectedTag.id === tag.id
 
   React.useEffect(() => {
     if (!!ref.current) {
-      const style =
-        (deviceType === "mob"
-          ? tag.mobStyle
-          : deviceType === "tab"
-          ? tag.tabStyle
-          : tag.style) ||
-        tag.style ||
-        tag.tabStyle ||
-        tag.mobStyle ||
-        "";
-      ref.current.setAttribute("style", style);
+      // Apply styles based on the device type
+      ref.current.setAttribute("style", getStyle(tag, deviceType))
     }
-  }, [deviceType, ref, tag]);
+  }, [deviceType, ref, tag])
 
   return (
     <div
@@ -90,7 +81,7 @@ const TagNode = ({ tag }: TagNodeProps) => {
         <></>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default TagNode;
+export default TagNode

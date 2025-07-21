@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react"
 import { _item_slug, Itemx } from "./item"
 import Link from "next/link"
@@ -19,7 +20,7 @@ const ItemNode = ({ item }: Props) => {
   const name = (
     JSON.parse(
       item.item_name_json || '[{"id":"", "source":"alias", "text": ""}]'
-    ) as Array<any>
+    ) as Array<{id: string, source: string, text: string}>
   ).filter((x) => x.source === "alias")[0].text
   const desc = JSON.parse(
     item.item_meta_json || '{"description":""}'
@@ -29,9 +30,11 @@ const ItemNode = ({ item }: Props) => {
       <Link href={`/item/${slug}/${item.item_id}`} target="_blank">
         <div className="min-w-60 bg-white text-slate-800 rounded-md shadow-md overflow-hidden hover:scale-105 transition-all duration-300 ease-in cursor-pointer">
           <div className="w-60 h-60 overflow-hidden relative">
-            <img
+            <Image
               alt={desc}
               src={imageUrl}
+              width={240}
+              height={240}
               className="object-cover w-full h-full z-10"
             />
             <div className="absolute inset-0">{name}</div>

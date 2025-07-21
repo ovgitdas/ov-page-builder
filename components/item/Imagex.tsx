@@ -1,10 +1,11 @@
 "use client"
+import Image from "next/image";
 import React from "react"
 
 interface Props {
   src: string
   alt: string
-  onMouseMove: (src: string, x: number, y: number, w: number, h: number) => any
+  onMouseMove: (src: string, x: number, y: number, w: number, h: number) => void
 }
 
 const Imagex = ({ src, alt, onMouseMove }: Props) => {
@@ -20,13 +21,15 @@ const Imagex = ({ src, alt, onMouseMove }: Props) => {
   }
 
   return (
-    <img
+    <Image
       ref={ref}
       src={src}
       alt={alt}
+      width={0}
+      height={0}
       className="object-contain h-full mx-auto cursor-zoom-in"
       onMouseMove={_onMouseMove}
-      onMouseLeave={(e) => {
+      onMouseLeave={() => {
         onMouseMove("", 0, 0, 0, 0)
       }}
     />
