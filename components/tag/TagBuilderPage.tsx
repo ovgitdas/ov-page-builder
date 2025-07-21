@@ -18,7 +18,11 @@ import ViewPort from "./ViewPort"
  * @returns {JSX.Element} The rendered Tag Builder page.
  */
 const TagBuilderPage = () => {
-  const { page } = useTagStore()
+  const { page, setSelectedTag } = useTagStore()
+  React.useEffect(() => {
+    // Reset selected tag when the page changes
+    setSelectedTag(page.root.id)
+  }, [page, setSelectedTag])
 
   return (
     <>
