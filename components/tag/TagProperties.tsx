@@ -23,6 +23,7 @@ import { CloneIcon } from "../icons/CloneIcon";
 import ItemCarouselForm from "./item/ItemCarouselForm";
 import { useViewPort } from "./viewport_zustand";
 import { ArrowDown, ArrowUp } from "lucide-react";
+import LinkImageCarouselForm from "./link-image/ImageCarouselForm";
 
 export const TagProperties = () => {
   const {
@@ -240,13 +241,11 @@ export const TagProperties = () => {
           </div>
         ) : selectedTag.children && "itemCarousel" in selectedTag.children ? (
           <ItemCarouselForm />
+        ) : selectedTag.children && "imageCarousel" in selectedTag.children ? (
+          <LinkImageCarouselForm />
         ) : selectedTag.children && "linkImage" in selectedTag.children ? (
           <p className="text-muted-foreground">
             Link Image children cannot be edited directly here.
-          </p>
-        ) : selectedTag.children && "imageCarousel" in selectedTag.children ? (
-          <p className="text-muted-foreground">
-            Image Carousel children cannot be edited directly here.
           </p>
         ) : selectedTag.children ? (
           <p className="text-muted-foreground">Selected tag has no children.</p>
