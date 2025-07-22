@@ -4,11 +4,6 @@ import { Node, ItemLayout, defaultLayout } from "./ItemLayout"
 import Link from "next/link"
 import Image from "next/image"
 
-export interface ImageNodeProps {
-  node: Node
-  itemLayout: ItemLayout
-}
-
 const DivNode: React.FC<{ node: Node; itemLayout: ItemLayout }> = ({
   node,
   itemLayout,
@@ -40,7 +35,7 @@ const DivNode: React.FC<{ node: Node; itemLayout: ItemLayout }> = ({
       src={node.children.value}
       width={node.width}
       height={node.height}
-      alt={itemLayout.meta?.item_name || "Item Image"} // Use optional chaining for item_name
+      alt={node.children.alt || "Item Image"} // Use optional chaining for item_name
       onError={(e) => {
         // e.currentTarget refers to the <img> element that triggered the error
         e.currentTarget.src =

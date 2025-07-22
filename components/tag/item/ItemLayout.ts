@@ -2,6 +2,7 @@ export interface Field {
   type: "text" | "image"
   name: string
   value: string
+  alt?: string
 }
 
 export type ChildrenTypes = Node[] | Field
@@ -22,8 +23,8 @@ export interface ItemLayout {
 export const defaultLayout: ItemLayout = {
   link: "/item/{item_id}",
   node: {
-    width: 100,
-    height: 100,
+    width: 250,
+    height: 400,
     style:
       "display: flex; flex-direction: column; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; font-family: sans-serif; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);",
     children: [
