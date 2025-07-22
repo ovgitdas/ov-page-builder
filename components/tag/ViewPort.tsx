@@ -1,50 +1,50 @@
-"use client"
-import React from "react"
-import { devices, useViewPort } from "./viewport_zustand"
-import { Button } from "../ui/button"
-import { useTagStore } from "./tag_zustand"
+"use client";
+import React from "react";
+import { devices, useViewPort } from "./viewport_zustand";
+import { Button } from "../ui/button";
+import { useTagStore } from "./tag_zustand";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select"
+} from "../ui/select";
 
 const ViewPort = ({ children }: { children: React.ReactNode }) => {
-  const { deviceType, setDevice, label, width, height } = useViewPort()
-  const [zoom, setZoom] = React.useState(50)
-  const [position, setPosition] = React.useState({ left: 0, top: 0 })
+  const { deviceType, setDevice, label, width, height } = useViewPort();
+  const [zoom, setZoom] = React.useState(50);
+  const [position, setPosition] = React.useState({ left: 0, top: 0 });
   const handleResize = React.useCallback(() => {
     if (typeof window !== "undefined") {
       setPosition({
         left: (window.innerWidth - width) / 2 - 16, //16px (p-4) is the border of the screen
         top: (window.innerHeight - height) / 2 - 16, //16px (p-4) is the border of the screen
-      })
+      });
       if (width > height) {
         // since view width is 3/5 of the screen width
         setZoom(
           (((((3 * window.innerWidth) / (5 * width)) * 100) / 10) | 0) * 10
-        )
+        );
       } else {
         // since view height is 8/10 of the screen width
         setZoom(
           (((((8 * window.innerHeight) / (10 * height)) * 100) / 10) | 0) * 10
-        )
+        );
       }
     }
-  }, [width, height])
+  }, [width, height]);
 
   React.useEffect(() => {
-    window.addEventListener("resize", handleResize)
-    handleResize()
+    window.addEventListener("resize", handleResize);
+    handleResize();
     return () => {
-      window.removeEventListener("resize", handleResize)
-    }
-  }, [deviceType, handleResize])
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [deviceType, handleResize]);
 
-  const [code, setCode] = React.useState(false)
-  const { page } = useTagStore()
+  const [code, setCode] = React.useState(false);
+  const { page } = useTagStore();
 
   return (
     <div>
@@ -114,7 +114,7 @@ const ViewPort = ({ children }: { children: React.ReactNode }) => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default ViewPort
+export default ViewPort;

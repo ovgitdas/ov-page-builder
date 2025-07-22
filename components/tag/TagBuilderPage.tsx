@@ -2,13 +2,13 @@
  * @fileoverview This file defines the main layout and orchestrator for the Tag Builder UI.
  * It assembles the navigation, view, and properties panels into a single page.
  */
-"use client"
-import React from "react"
-import { useTagStore } from "./tag_zustand"
-import { TagProperties } from "./TagProperties"
-import TagNode from "./TagNode"
-import { TagNavNode } from "./TagNavNode"
-import ViewPort from "./ViewPort"
+"use client";
+import React from "react";
+import { useTagStore } from "./tag_zustand";
+import { TagProperties } from "./TagProperties";
+import TagNode from "./TagNode";
+import { TagNavNode } from "./TagNavNode";
+import ViewPort from "./ViewPort";
 
 /**
  * The main page component for the Tag Builder application.
@@ -18,11 +18,10 @@ import ViewPort from "./ViewPort"
  * @returns {JSX.Element} The rendered Tag Builder page.
  */
 const TagBuilderPage = () => {
-  const { page, setSelectedTag } = useTagStore()
+  const { page, setSelectedTag } = useTagStore();
   React.useEffect(() => {
-    // Reset selected tag when the page changes
-    setSelectedTag(page.root.id)
-  }, [page, setSelectedTag])
+    setSelectedTag(page.root.id);
+  }, []);
 
   return (
     <>
@@ -49,7 +48,7 @@ const TagBuilderPage = () => {
         </aside>
       </div>
     </>
-  )
-}
+  );
+};
 
-export default TagBuilderPage
+export default TagBuilderPage;
