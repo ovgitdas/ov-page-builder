@@ -1,27 +1,28 @@
-"use client"
+"use client";
 
-import { childrenTypes, getChildrenType, useTagStore } from "./tag_zustand"
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
+import { childrenTypes, getChildrenType, useTagStore } from "./tag_zustand";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
-import { TagChildrenType } from "./tag"
-import { Input } from "../ui/input"
-import { UndoIcon } from "../icons/UndoIcon"
-import { RedoIcon } from "../icons/RedoIcon"
-import { WrapIcon } from "../icons/WrapIcon"
-import { UnwrapIcon } from "../icons/UnwrapIcon"
-import { DeleteIcon } from "../icons/DeleteIcon"
-import { AppendIcon } from "../icons/AppendIcon"
-import { CloneIcon } from "../icons/CloneIcon"
-import ItemCarouselForm from "./item/ItemCarouselForm"
-import { useViewPort } from "./viewport_zustand"
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { TagChildrenType } from "./tag";
+import { Input } from "../ui/input";
+import { UndoIcon } from "../icons/UndoIcon";
+import { RedoIcon } from "../icons/RedoIcon";
+import { WrapIcon } from "../icons/WrapIcon";
+import { UnwrapIcon } from "../icons/UnwrapIcon";
+import { DeleteIcon } from "../icons/DeleteIcon";
+import { AppendIcon } from "../icons/AppendIcon";
+import { CloneIcon } from "../icons/CloneIcon";
+import ItemCarouselForm from "./item/ItemCarouselForm";
+import { useViewPort } from "./viewport_zustand";
+import { ArrowDown, ArrowUp } from "lucide-react";
 
 export const TagProperties = () => {
   const {
@@ -37,14 +38,16 @@ export const TagProperties = () => {
     deleteTag,
     append,
     clone,
+    up,
+    down,
     setStyle,
     changeChildrenType,
     updateChildren,
-  } = useTagStore()
-  const { deviceType } = useViewPort()
+  } = useTagStore();
+  const { deviceType } = useViewPort();
 
   if (!selectedTag) {
-    return <div>No tag selected</div>
+    return <div>No tag selected</div>;
   }
 
   return (
@@ -108,6 +111,22 @@ export const TagProperties = () => {
           >
             <CloneIcon />
             <div className="text-xs">Clone</div>
+          </Button>
+          <Button
+            size="sm"
+            disabled={page.root.id === selectedTag.id}
+            onClick={up}
+          >
+            <ArrowUp />
+            <div className="text-xs">Move Up</div>
+          </Button>
+          <Button
+            size="sm"
+            disabled={page.root.id === selectedTag.id}
+            onClick={down}
+          >
+            <ArrowDown />
+            <div className="text-xs">Move Down</div>
           </Button>
         </div>
         <div>
@@ -214,16 +233,13 @@ export const TagProperties = () => {
               id="children"
               value={selectedTag.children.text || ""}
               onChange={(e) => {
-                updateChildren({ text: e.target.value })
+                updateChildren({ text: e.target.value });
               }}
               className="bg-white"
             />
           </div>
         ) : selectedTag.children && "itemCarousel" in selectedTag.children ? (
-          <ItemCarouselForm
-            carousel={selectedTag.children.itemCarousel}
-            onUpdate={(newCarousel) => {}}
-          />
+          <ItemCarouselForm />
         ) : selectedTag.children && "linkImage" in selectedTag.children ? (
           <p className="text-muted-foreground">
             Link Image children cannot be edited directly here.
@@ -239,5 +255,5 @@ export const TagProperties = () => {
         )}
       </div>
     </div>
-  )
-}
+  );
+};

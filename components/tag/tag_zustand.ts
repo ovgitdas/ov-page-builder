@@ -92,6 +92,10 @@ export const useTagStore = create<{
   append: () => void;
   /** Appends a new tag as a child of the specified tag. */
   clone: () => void;
+  /** Moves a tag up in the tag hierarchy. */
+  up: () => void;
+  /** Moves a tag down in the tag hierarchy. */
+  down: () => void;
   /** Sets the style for a tag. */
   setStyle: (style: string, deviceType: DeviceType) => void;
   /** Changes the type of children for a tag. */
@@ -282,6 +286,54 @@ export const useTagStore = create<{
     }
   },
 
+  up() {
+    const { page, selectedTag, history } = get();
+    const _history = JSON.parse(JSON.stringify({ page, selectedTag }));
+    if (!selectedTag) return;
+    const { id } = selectedTag;
+    const parentTag = findParentTag(id, page.root);
+    if (!parentTag || !parentTag.children) return;
+    if ("tags" in parentTag.children) {
+      if (parentTag.children.tags.length < 2) return;
+      const index = parentTag.children.tags.findIndex((tag) => tag.id === id);
+      if (index < 1) return;
+      const temp = parentTag.children.tags[index];
+      parentTag.children.tags[index] = parentTag.children.tags[index - 1];
+      parentTag.children.tags[index - 1] = temp;
+      const _page = JSON.parse(JSON.stringify(page));
+      const _selectedTag = findTag(id, [_page.root]);
+      set({
+        page: _page,
+        selectedTag: _selectedTag,
+        history: [...history, _history],
+      });
+    }
+  },
+
+  down() {
+    const { page, selectedTag, history } = get();
+    const _history = JSON.parse(JSON.stringify({ page, selectedTag }));
+    if (!selectedTag) return;
+    const { id } = selectedTag;
+    const parentTag = findParentTag(id, page.root);
+    if (!parentTag || !parentTag.children) return;
+    if ("tags" in parentTag.children) {
+      if (parentTag.children.tags.length < 2) return;
+      const index = parentTag.children.tags.findIndex((tag) => tag.id === id);
+      if (index < 0 || index >= parentTag.children.tags.length - 1) return;
+      const temp = parentTag.children.tags[index];
+      parentTag.children.tags[index] = parentTag.children.tags[index + 1];
+      parentTag.children.tags[index + 1] = temp;
+      const _page = JSON.parse(JSON.stringify(page));
+      const _selectedTag = findTag(id, [_page.root]);
+      set({
+        page: _page,
+        selectedTag: _selectedTag,
+        history: [...history, _history],
+      });
+    }
+  },
+
   setStyle(style: string, deviceType: DeviceType) {
     const { page, selectedTag } = get();
     if (!selectedTag) return;
@@ -334,7 +386,11 @@ export const useTagStore = create<{
                 href: "#",
               },
             ],
-            showController: true,
+            mobShowController: false,
+            tabShowController: false,
+            pcShowController: true,
+            wideShowController: true,
+            ultraShowController: true,
           },
         };
         break;
@@ -343,8 +399,11 @@ export const useTagStore = create<{
         tag.children = {
           itemCarousel: {
             query: "SELECT * FROM item",
-            cols: 3,
-            showController: true,
+            mobShowController: false,
+            tabShowController: false,
+            pcShowController: true,
+            wideShowController: true,
+            ultraShowController: true,
           },
         };
         break;

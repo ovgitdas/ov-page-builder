@@ -1,82 +1,123 @@
 /**
  * @fileoverview Form for inputting ItemCarousel data.
  */
-"use client"
-import React from "react"
-import { ItemCarousel } from "../tag"
-import { Textarea } from "../../ui/textarea"
-import { Label } from "@/components/ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { Switch } from "@/components/ui/switch"
+"use client";
+import React from "react";
+import { Textarea } from "../../ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { useTagStore } from "../tag_zustand";
 
-interface ItemCarouselFormProps {
-  carousel: ItemCarousel
-  onUpdate: (newCarousel: ItemCarousel) => void
-}
+const ItemCarouselForm: React.FC = () => {
+  const { selectedTag, updateChildren } = useTagStore();
+  if (
+    !!selectedTag &&
+    !!selectedTag.children &&
+    !!("itemCarousel" in selectedTag.children)
+  ) {
+    const itemCarousel = selectedTag.children.itemCarousel;
 
-const ItemCarouselForm: React.FC<ItemCarouselFormProps> = ({
-  carousel,
-  onUpdate,
-}) => {
-  const handleQueryChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    onUpdate({ ...carousel, query: e.target.value })
-  }
-
-  const handleColsChange = (value: string) => {
-    const numericValue = parseInt(value, 10)
-    onUpdate({ ...carousel, cols: numericValue as ItemCarousel["cols"] })
-  }
-
-  const handleShowControllerChange = (checked: boolean) => {
-    onUpdate({ ...carousel, showController: checked })
-  }
-
-  return (
-    <div className="space-y-4">
-      <div>
-        <Label htmlFor="item-carousel-query">Query</Label>
-        <Textarea
-          id="item-carousel-query"
-          value={carousel.query}
-          onChange={handleQueryChange}
-          placeholder="Enter SQL query"
-          className="bg-white"
-        />
+    return (
+      <div className="space-y-4">
+        <div>
+          <Label htmlFor="item-carousel-query">Query</Label>
+          <Textarea
+            id="item-carousel-query"
+            value={selectedTag.children.itemCarousel.query}
+            onChange={(e) => {
+              updateChildren({
+                itemCarousel: {
+                  ...itemCarousel,
+                  query: e.target.value,
+                },
+              });
+            }}
+            placeholder="Enter SQL query"
+            className="bg-white"
+          />
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <div>Show controller for</div>
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="pc-show-controller"
+              checked={itemCarousel.pcShowController}
+              onCheckedChange={(checked) => {
+                updateChildren({
+                  itemCarousel: {
+                    ...itemCarousel,
+                    pcShowController: checked,
+                  },
+                });
+              }}
+            />
+            <Label htmlFor="pc-show-controller">PC</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="wide-show-controller"
+              checked={itemCarousel.wideShowController}
+              onCheckedChange={(checked) => {
+                updateChildren({
+                  itemCarousel: {
+                    ...itemCarousel,
+                    wideShowController: checked,
+                  },
+                });
+              }}
+            />
+            <Label htmlFor="wide-show-controller">Wide Screen</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="ultra-show-controller"
+              checked={itemCarousel.ultraShowController}
+              onCheckedChange={(checked) => {
+                updateChildren({
+                  itemCarousel: {
+                    ...itemCarousel,
+                    ultraShowController: checked,
+                  },
+                });
+              }}
+            />
+            <Label htmlFor="ultra-show-controller">Ultra Wide</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="mob-show-controller"
+              checked={itemCarousel.mobShowController}
+              onCheckedChange={(checked) => {
+                updateChildren({
+                  itemCarousel: {
+                    ...itemCarousel,
+                    mobShowController: checked,
+                  },
+                });
+              }}
+            />
+            <Label htmlFor="mob-show-controller">Mobile</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="tab-show-controller"
+              checked={itemCarousel.tabShowController}
+              onCheckedChange={(checked) => {
+                updateChildren({
+                  itemCarousel: {
+                    ...itemCarousel,
+                    tabShowController: checked,
+                  },
+                });
+              }}
+            />
+            <Label htmlFor="tab-show-controller">Tablet</Label>
+          </div>
+        </div>
       </div>
-      <div>
-        <Label htmlFor="item-carousel-cols">Columns</Label>
-        <Select
-          value={carousel.cols.toString()}
-          onValueChange={handleColsChange}
-        >
-          <SelectTrigger id="item-carousel-cols">
-            <SelectValue placeholder="Number of columns" />
-          </SelectTrigger>
-          <SelectContent>
-            {[2, 3, 4, 5, 6, 12].map((col) => (
-              <SelectItem key={col} value={col.toString()}>
-                {col}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-      <div className="flex items-center space-x-2">
-        <Switch
-          id="item-carousel-show-controller"
-          checked={carousel.showController}
-          onCheckedChange={handleShowControllerChange}
-        />
-        <Label htmlFor="item-carousel-show-controller">Show Controller</Label>
-      </div>
-    </div>
-  )
-}
+    );
+  }
+  return <></>;
+};
 
-export default ItemCarouselForm
+export default ItemCarouselForm;

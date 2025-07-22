@@ -1,23 +1,23 @@
 export interface Field {
-  type: "text" | "image"
-  name: string
-  value: string
-  alt?: string
+  type: "text" | "image";
+  name: string;
+  value: string;
+  alt?: string;
 }
 
-export type ChildrenTypes = Node[] | Field
+export type ChildrenTypes = Node[] | Field;
 
 export interface Node {
-  width?: number
-  height?: number
-  style: string
-  children: ChildrenTypes
+  width?: number;
+  height?: number;
+  style: string;
+  children: ChildrenTypes;
 }
 
 export interface ItemLayout {
-  link: string
-  node: Node
-  meta: { [key: string]: string }
+  link: string;
+  node: Node;
+  meta: { [key: string]: string };
 }
 
 export const defaultLayout: ItemLayout = {
@@ -29,13 +29,13 @@ export const defaultLayout: ItemLayout = {
       "display: flex; flex-direction: column; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; font-family: sans-serif; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);",
     children: [
       {
-        width: 100,
-        height: 60,
+        width: 250,
+        height: 240,
         style: "position: relative; overflow: hidden;",
         children: [
           {
-            width: 100,
-            height: 100,
+            width: 250,
+            height: 250,
             style:
               "display: flex; justify-content: center; align-items: center;",
             children: {
@@ -46,10 +46,10 @@ export const defaultLayout: ItemLayout = {
             },
           },
           {
-            width: 30,
-            height: 15,
+            width: 234,
+            height: 240,
             style:
-              "position: absolute; top: 8px; left: 8px; background-color: #4CAF50; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.75em; font-weight: bold;",
+              "position: absolute; top: 8px; left: 8px; background-color: #AAAAAA22; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.75em; font-weight: bold;",
             children: {
               name: "discount_text",
               type: "text",
@@ -59,14 +59,14 @@ export const defaultLayout: ItemLayout = {
         ],
       },
       {
-        width: 100,
-        height: 40,
+        width: 250,
+        height: 160,
         style:
           "padding: 8px; display: flex; flex-direction: column; justify-content: space-between;",
         children: [
           {
-            width: 100,
-            height: 20,
+            width: 250,
+            height: 80,
             style:
               "font-size: 1em; font-weight: bold; color: #333; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;",
             children: {
@@ -76,19 +76,19 @@ export const defaultLayout: ItemLayout = {
             },
           },
           {
-            width: 100,
-            height: 20,
+            width: 250,
+            height: 80,
             style:
               "display: flex; justify-content: space-between; align-items: center; margin-top: 4px;",
             children: [
               {
-                width: 60,
-                height: 20,
+                width: 150,
+                height: 80,
                 style: "display: flex; align-items: baseline;",
                 children: [
                   {
-                    width: 50,
-                    height: 20,
+                    width: 125,
+                    height: 80,
                     style: "font-size: 1.1em; font-weight: bold; color: #333;",
                     children: {
                       name: "unit_price",
@@ -97,8 +97,8 @@ export const defaultLayout: ItemLayout = {
                     },
                   },
                   {
-                    width: 50,
-                    height: 20,
+                    width: 125,
+                    height: 80,
                     style:
                       "font-size: 0.8em; color: #888; text-decoration: line-through; margin-left: 8px;",
                     children: {
@@ -110,8 +110,8 @@ export const defaultLayout: ItemLayout = {
                 ],
               },
               {
-                width: 40,
-                height: 20,
+                width: 100,
+                height: 80,
                 style:
                   "display: flex; align-items: center; justify-content: flex-end; font-size: 0.9em; color: #FFC107;",
                 children: {
@@ -147,4 +147,4 @@ export const defaultLayout: ItemLayout = {
     sponsored_rank: "{sponsored_rank}",
     created_on: "{created_on}",
   },
-}
+};
