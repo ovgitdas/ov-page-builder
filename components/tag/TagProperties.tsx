@@ -24,6 +24,7 @@ import ItemCarouselForm from "./item/ItemCarouselForm";
 import { useViewPort } from "./viewport_zustand";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import LinkImageCarouselForm from "./link-image/ImageCarouselForm";
+import { LinkImageInput } from "./link-image/LinkImageInput";
 
 export const TagProperties = () => {
   const {
@@ -229,7 +230,7 @@ export const TagProperties = () => {
       <div className="bg-yellow-200 p-4 rounded-sm flex flex-col gap-4">
         {selectedTag.children && "text" in selectedTag.children ? (
           <div>
-            <Label htmlFor="children">Children (JSON)</Label>
+            <Label htmlFor="children">Text</Label>
             <Textarea
               id="children"
               value={selectedTag.children.text || ""}
@@ -244,9 +245,12 @@ export const TagProperties = () => {
         ) : selectedTag.children && "imageCarousel" in selectedTag.children ? (
           <LinkImageCarouselForm />
         ) : selectedTag.children && "linkImage" in selectedTag.children ? (
-          <p className="text-muted-foreground">
-            Link Image children cannot be edited directly here.
-          </p>
+          <LinkImageInput
+            value={selectedTag.children.linkImage}
+            onChange={(linkImage) => {
+              updateChildren({ linkImage });
+            }}
+          />
         ) : selectedTag.children ? (
           <p className="text-muted-foreground">Selected tag has no children.</p>
         ) : (

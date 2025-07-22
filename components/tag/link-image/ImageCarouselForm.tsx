@@ -8,13 +8,16 @@
 
 import React from "react";
 import { Label } from "@/components/ui/label";
-// import { FaPlus } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
 import { LinkImageInput } from "./LinkImageInput";
 import { useTagStore } from "../tag_zustand";
 import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
 
 const ImageCarouselForm: React.FC = () => {
   const { selectedTag, updateChildren } = useTagStore();
+
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
 
   if (
     !!selectedTag &&
@@ -22,6 +25,7 @@ const ImageCarouselForm: React.FC = () => {
     !!("imageCarousel" in selectedTag.children)
   ) {
     const imageCarousel = selectedTag.children.imageCarousel;
+
     return (
       <div className="space-y-6 p-4 border rounded-lg bg-card text-card-foreground">
         <div className="flex flex-wrap gap-2">
@@ -103,42 +107,62 @@ const ImageCarouselForm: React.FC = () => {
           </div>
         </div>
 
-        <div className="space-y-4">
-          <h4 className="font-semibold text-lg">Images</h4>
+        <div>
           {imageCarousel.linkImages.length > 0 ? (
-            <Tabs defaultValue="account" className="w-[400px]">
-              <TabsList>
+            <div className="flex flex-col gap-2 rounded-md p-2 shadow-md bg-slate-100">
+              <div className="flex flex-wrap gap-1 justify-center items-center">
                 {imageCarousel.linkImages.map((linkImage, index) => (
-                  <TabsTrigger key={index} value={index}>
-                    {index + 1}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-              {imageCarousel.linkImages.map((linkImage, index) => (
-                <TabsContent key={index} value={index}>
-                  <LinkImageInput
+                  <Button
+                    size="sm"
+                    variant={selectedIndex === index ? "default" : "outline"}
+                    onClick={() => setSelectedIndex(index)}
                     key={index}
-                    value={linkImage}
-                    onChange={(linkImage) => {
-                      updateChildren({
-                        imageCarousel: {
-                          ...imageCarousel,
-                          linkImages: imageCarousel.linkImages.map(
-                            (image, i) => {
-                              if (i === index) {
-                                return linkImage;
-                              } else {
-                                return image;
-                              }
-                            }
-                          ),
-                        },
-                      });
-                    }}
-                  />
-                </TabsContent>
-              ))}
-            </Tabs>
+                    value={index}
+                  >
+                    {index + 1}
+                  </Button>
+                ))}
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    const index = imageCarousel.linkImages.length + 1;
+                    updateChildren({
+                      imageCarousel: {
+                        ...imageCarousel,
+                        linkImages: [
+                          ...imageCarousel.linkImages,
+                          {
+                            src: `https://yourdomain.com/image-${index}.jpg`,
+                            alt: `alt text for the image-${index}`,
+                            href: `https://yourdomain.com/page-${index}`,
+                          },
+                        ],
+                      },
+                    });
+                  }}
+                >
+                  <FaPlus />
+                </Button>
+              </div>
+              <LinkImageInput
+                value={imageCarousel.linkImages[selectedIndex]}
+                onChange={(linkImage) => {
+                  updateChildren({
+                    imageCarousel: {
+                      ...imageCarousel,
+                      linkImages: imageCarousel.linkImages.map((image, i) => {
+                        if (i === selectedIndex) {
+                          return linkImage;
+                        } else {
+                          return image;
+                        }
+                      }),
+                    },
+                  });
+                }}
+              />
+            </div>
           ) : (
             <p className="text-muted-foreground text-center py-4">
               No linkImages in the carousel yet.
