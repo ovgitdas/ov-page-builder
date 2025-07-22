@@ -106,26 +106,39 @@ const ImageCarouselForm: React.FC = () => {
         <div className="space-y-4">
           <h4 className="font-semibold text-lg">Images</h4>
           {imageCarousel.linkImages.length > 0 ? (
-            imageCarousel.linkImages.map((linkImage, index) => (
-              <LinkImageInput
-                key={index}
-                value={linkImage}
-                onChange={(linkImage) => {
-                  updateChildren({
-                    imageCarousel: {
-                      ...imageCarousel,
-                      linkImages: imageCarousel.linkImages.map((image, i) => {
-                        if (i === index) {
-                          return linkImage;
-                        } else {
-                          return image;
-                        }
-                      }),
-                    },
-                  });
-                }}
-              />
-            ))
+            <Tabs defaultValue="account" className="w-[400px]">
+              <TabsList>
+                {imageCarousel.linkImages.map((linkImage, index) => (
+                  <TabsTrigger key={index} value={index}>
+                    {index + 1}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+              {imageCarousel.linkImages.map((linkImage, index) => (
+                <TabsContent key={index} value={index}>
+                  <LinkImageInput
+                    key={index}
+                    value={linkImage}
+                    onChange={(linkImage) => {
+                      updateChildren({
+                        imageCarousel: {
+                          ...imageCarousel,
+                          linkImages: imageCarousel.linkImages.map(
+                            (image, i) => {
+                              if (i === index) {
+                                return linkImage;
+                              } else {
+                                return image;
+                              }
+                            }
+                          ),
+                        },
+                      });
+                    }}
+                  />
+                </TabsContent>
+              ))}
+            </Tabs>
           ) : (
             <p className="text-muted-foreground text-center py-4">
               No linkImages in the carousel yet.
