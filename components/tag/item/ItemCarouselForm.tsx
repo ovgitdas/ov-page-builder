@@ -3,8 +3,8 @@
  */
 "use client"
 import React from "react"
-import { ItemCarousel } from "./tag"
-import { Textarea } from "../ui/textarea"
+import { ItemCarousel } from "../tag"
+import { Textarea } from "../../ui/textarea"
 import { Label } from "@/components/ui/label"
 import {
   Select,

@@ -1,27 +1,27 @@
-"use client";
+"use client"
 
-import { childrenTypes, getChildrenType, useTagStore } from "./tag_zustand";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
+import { childrenTypes, getChildrenType, useTagStore } from "./tag_zustand"
+import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { TagChildrenType } from "./tag";
-import { Input } from "../ui/input";
-import { UndoIcon } from "../icons/UndoIcon";
-import { RedoIcon } from "../icons/RedoIcon";
-import { WrapIcon } from "../icons/WrapIcon";
-import { UnwrapIcon } from "../icons/UnwrapIcon";
-import { DeleteIcon } from "../icons/DeleteIcon";
-import { AppendIcon } from "../icons/AppendIcon";
-import { CloneIcon } from "../icons/CloneIcon";
-import ItemCarouselForm from "./ItemCarouselForm";
-import { useViewPort } from "./viewport_zustand";
+} from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
+import { TagChildrenType } from "./tag"
+import { Input } from "../ui/input"
+import { UndoIcon } from "../icons/UndoIcon"
+import { RedoIcon } from "../icons/RedoIcon"
+import { WrapIcon } from "../icons/WrapIcon"
+import { UnwrapIcon } from "../icons/UnwrapIcon"
+import { DeleteIcon } from "../icons/DeleteIcon"
+import { AppendIcon } from "../icons/AppendIcon"
+import { CloneIcon } from "../icons/CloneIcon"
+import ItemCarouselForm from "./item/ItemCarouselForm"
+import { useViewPort } from "./viewport_zustand"
 
 export const TagProperties = () => {
   const {
@@ -40,11 +40,11 @@ export const TagProperties = () => {
     setStyle,
     changeChildrenType,
     updateChildren,
-  } = useTagStore();
-  const { deviceType } = useViewPort();
+  } = useTagStore()
+  const { deviceType } = useViewPort()
 
   if (!selectedTag) {
-    return <div>No tag selected</div>;
+    return <div>No tag selected</div>
   }
 
   return (
@@ -214,7 +214,7 @@ export const TagProperties = () => {
               id="children"
               value={selectedTag.children.text || ""}
               onChange={(e) => {
-                updateChildren({ text: e.target.value });
+                updateChildren({ text: e.target.value })
               }}
               className="bg-white"
             />
@@ -239,5 +239,5 @@ export const TagProperties = () => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}

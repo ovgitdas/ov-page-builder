@@ -11,7 +11,7 @@ import { Tag } from "./tag"
 import Link from "next/link"
 import Image from "next/image"
 import ImageCarouselComponent from "./ImageCarouselComponent"
-import ItemCarouselComponent from "./ItemCarouselComponent"
+import ItemCarouselComponent from "./item/ItemCarouselComponent"
 import { useViewPort } from "./viewport_zustand"
 import { getStyle, useTagStore } from "./tag_zustand"
 
