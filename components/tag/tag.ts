@@ -12,8 +12,6 @@ export interface ItemCarousel {
   /** The SQL query used to fetch the items for the carousel. */
   query: string
   /** The number of columns to display on larger screens. */
-  cols: 2 | 3 | 4 | 5 | 6 | 12
-  /** Whether to show the next/previous navigation controls. */
   showController: boolean
 }
 

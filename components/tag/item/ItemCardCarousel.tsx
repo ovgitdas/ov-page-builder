@@ -14,9 +14,8 @@ const ItemCardCarousel: React.FC<{
 
   React.useEffect(() => {
     if (ref.current) {
-      const mx = 8
       const _itemLayout = itemLayout || defaultLayout
-      const itemWidth = (_itemLayout.node.width || 100) + mx
+      const itemWidth = _itemLayout.node.width || 100
       const flexBasis = `${(itemWidth / containerWidth) * 100}%`
       ref.current.style.flexBasis = flexBasis
     }
@@ -28,7 +27,7 @@ const ItemCardCarousel: React.FC<{
       role="group"
       aria-roledescription="slide"
       data-slot="carousel-item"
-      className="min-w-0 shrink-0 grow-0 "
+      className="min-w-0 shrink-0 grow-0"
     >
       <CarouselItem ref={ref}>
         {isShimmer ? (

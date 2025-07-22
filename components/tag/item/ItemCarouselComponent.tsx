@@ -69,7 +69,7 @@ const ItemCarouselComponent = ({ itemCarousel }: Props) => {
   return (
     <div ref={ref} className="relative w-full">
       <Carousel setApi={setApi}>
-        <CarouselContent className="py-4">
+        <CarouselContent className="gap-0">
           {items.length === 0
             ? Array.from({ length: 40 }, (_, i) => i).map((_, index) => (
                 <ItemCardCarousel
