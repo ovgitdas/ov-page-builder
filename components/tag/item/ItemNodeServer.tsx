@@ -6,6 +6,7 @@ import {
   replacePlaceholders,
 } from "./item";
 import Link from "next/link";
+import { ItemShimmerCarousel } from "./ItemShimmerServer";
 
 const textNode = ({
   text,
@@ -71,7 +72,7 @@ const node = ({
     : "";
 };
 
-const ItemNodeServer: React.FC<{
+export const ItemNode: React.FC<{
   item: ItemSmall;
 }> = memo(({ item }): ReactNode => {
   const layout = item.gen_layout_json || defaultGenericLayoutJson;
@@ -88,4 +89,27 @@ const ItemNodeServer: React.FC<{
   );
 });
 
-export default ItemNodeServer;
+export const ItemNodeCarousel: React.FC<{
+  item: ItemSmall;
+  carouselContainerWidth: number;
+}> = memo(({ item, carouselContainerWidth }) => {
+  if (!item.gen_layout_json.width)
+    return (
+      <ItemShimmerCarousel carouselContainerWidth={carouselContainerWidth} />
+    );
+
+  const flexBasis = `${
+    (item.gen_layout_json.width / carouselContainerWidth) * 100
+  }%`;
+  return (
+    <div
+      role="group"
+      aria-roledescription="slide"
+      data-slot="carousel-item"
+      className="min-w-0 shrink-0 grow-0"
+      style={{ flexBasis }}
+    >
+      <ItemNode item={item} />
+    </div>
+  );
+});

@@ -3,19 +3,30 @@ import React, { ReactNode } from "react";
 
 const ItemNodeClient: React.FC<{
   children: ReactNode;
-  onLoad: (width: number) => any;
-}> = ({ children, onLoad }) => {
-  const ref = React.useRef<HTMLDivElement>(null);
+  carouselContainerWidth: number;
+}> = ({ children, carouselContainerWidth }) => {
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const nodeRef = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
-    if (!!ref.current) {
-      const width = ref.current.getBoundingClientRect().width;
-      onLoad(width);
+    if (!!nodeRef.current && !!containerRef.current) {
+      const width = nodeRef.current.getBoundingClientRect().width;
+      containerRef.current.style.flexBasis = `${
+        (width / carouselContainerWidth) * 100
+      }%`;
     }
-  }, [onLoad, ref]);
+  }, [nodeRef, containerRef]);
 
   return (
-    <div ref={ref} className="flex justify-center items-center">
-      {children}
+    <div
+      ref={containerRef}
+      role="group"
+      aria-roledescription="slide"
+      data-slot="carousel-item"
+      className="min-w-0 shrink-0 grow-0"
+    >
+      <div ref={nodeRef} className="flex justify-center items-center">
+        {children}
+      </div>
     </div>
   );
 };
