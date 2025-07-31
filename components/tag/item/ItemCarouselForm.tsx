@@ -1,40 +1,95 @@
 /**
  * @fileoverview Form for inputting ItemCarousel data.
  */
-"use client";
-import React from "react";
-import { Textarea } from "../../ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { useTagStore } from "../tag_zustand";
+"use client"
+import React from "react"
+import { useTagStore } from "../tag_zustand"
+import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
+import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { OrderByList } from "../tag"
 
 const ItemCarouselForm: React.FC = () => {
-  const { selectedTag, updateChildren } = useTagStore();
+  const { selectedTag, updateChildren } = useTagStore()
   if (
     !!selectedTag &&
     !!selectedTag.children &&
     !!("itemCarousel" in selectedTag.children)
   ) {
-    const itemCarousel = selectedTag.children.itemCarousel;
+    const itemCarousel = selectedTag.children.itemCarousel
 
     return (
       <div className="space-y-4">
         <div>
-          <Label htmlFor="item-carousel-query">Query</Label>
-          <Textarea
-            id="item-carousel-query"
-            value={selectedTag.children.itemCarousel.query}
+          <Label htmlFor="item-carousel-search-text">Search text</Label>
+          <Input
+            id="item-carousel-search-text"
+            value={selectedTag.children.itemCarousel.searchText}
             onChange={(e) => {
               updateChildren({
                 itemCarousel: {
                   ...itemCarousel,
-                  query: e.target.value,
+                  searchText: e.target.value,
                 },
-              });
+              })
             }}
-            placeholder="Enter SQL query"
+            placeholder="Item search text"
             className="bg-white"
           />
+        </div>
+        <div>
+          <Label htmlFor="item-carousel-limit">Total items</Label>
+          <Input
+            id="item-carousel-limit"
+            value={`${selectedTag.children.itemCarousel.limit}`}
+            onChange={(e) => {
+              updateChildren({
+                itemCarousel: {
+                  ...itemCarousel,
+                  limit: +e.target.value,
+                },
+              })
+            }}
+            placeholder="Total items to be shown"
+            className="bg-white"
+          />
+        </div>
+        <div className="flex gap-2">
+          <Label htmlFor="item-carousel-order-by">View by</Label>
+          <Select
+            defaultValue={selectedTag.children.itemCarousel.orderBy}
+            value={selectedTag.children.itemCarousel.orderBy}
+            onValueChange={(orderBy: (typeof OrderByList)[number]) => {
+              updateChildren({
+                itemCarousel: {
+                  ...itemCarousel,
+                  orderBy,
+                },
+              })
+            }}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="View by" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {OrderByList.map((orderBy, index) => (
+                  <SelectItem key={index} value={orderBy}>
+                    {orderBy}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </div>
         <div className="flex flex-wrap gap-2">
           <div>Show controller for</div>
@@ -48,7 +103,7 @@ const ItemCarouselForm: React.FC = () => {
                     ...itemCarousel,
                     pcShowController: checked,
                   },
-                });
+                })
               }}
             />
             <Label htmlFor="pc-show-controller">PC</Label>
@@ -63,7 +118,7 @@ const ItemCarouselForm: React.FC = () => {
                     ...itemCarousel,
                     wideShowController: checked,
                   },
-                });
+                })
               }}
             />
             <Label htmlFor="wide-show-controller">Wide Screen</Label>
@@ -78,7 +133,7 @@ const ItemCarouselForm: React.FC = () => {
                     ...itemCarousel,
                     ultraShowController: checked,
                   },
-                });
+                })
               }}
             />
             <Label htmlFor="ultra-show-controller">Ultra Wide</Label>
@@ -93,7 +148,7 @@ const ItemCarouselForm: React.FC = () => {
                     ...itemCarousel,
                     mobShowController: checked,
                   },
-                });
+                })
               }}
             />
             <Label htmlFor="mob-show-controller">Mobile</Label>
@@ -108,16 +163,16 @@ const ItemCarouselForm: React.FC = () => {
                     ...itemCarousel,
                     tabShowController: checked,
                   },
-                });
+                })
               }}
             />
             <Label htmlFor="tab-show-controller">Tablet</Label>
           </div>
         </div>
       </div>
-    );
+    )
   }
-  return <></>;
-};
+  return <></>
+}
 
-export default ItemCarouselForm;
+export default ItemCarouselForm
