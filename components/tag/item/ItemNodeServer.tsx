@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode, memo } from "react";
 import {
   GenericLayoutJson,
   ItemSmall,
@@ -71,9 +71,9 @@ const node = ({
     : "";
 };
 
-const ItemSmallNode: React.FC<{
+const ItemNodeServer: React.FC<{
   item: ItemSmall;
-}> = ({ item }) => {
+}> = memo(({ item }): ReactNode => {
   const layout = item.gen_layout_json || defaultGenericLayoutJson;
   const __html = node({ node: layout, item });
   return (
@@ -86,6 +86,6 @@ const ItemSmallNode: React.FC<{
       ></Link>
     </div>
   );
-};
+});
 
-export default ItemSmallNode;
+export default ItemNodeServer;

@@ -1,89 +1,32 @@
-export interface Item {
-  item_id: string;
-  vendor_id: string;
-  gen_id: number;
-  br_id: number;
-  cat_id: number;
-  gst_id: number;
-  unit_mrp: string;
-  unit_price: string;
-  item_name_json: string;
-  item_meta_json: string;
-  active: number;
-  rating: number;
-  rank: number;
-  created_on: string;
-  modified_on: string;
-}
-
-export const blankItem: Item = {
-  item_id: "",
-  vendor_id: "",
-  gen_id: 0,
-  br_id: 0,
-  cat_id: 0,
-  gst_id: 0,
-  unit_mrp: "",
-  unit_price: "",
-  item_name_json: "",
-  item_meta_json: "",
-  active: 0,
-  rating: 0,
-  rank: 0,
-  created_on: "",
-  modified_on: "",
-};
-
-export interface Generic {
-  gen_id: number;
-  gen_name: string;
-}
-
-export const blankGeneric = {
-  gen_id: 0,
-  gen_name: "",
-};
-
-export interface Itemx extends Generic, Item {
-  images: Array<ItemImage>;
-}
-
-const an = "abcdefghijklmnopqrstuvwxyz0123456789-";
-export const getRandomSlug = (name: string) =>
-  !!name
-    ? name
-        .toLowerCase()
-        .split(" ")
-        .join("-")
-        .split("")
-        .filter((x) => an.includes(x))
-        .join("")
-    : `x_${(Math.random() * 10000000) | 0}`;
-
 export interface ItemImage {
   item_id: string;
   item_image_url: string;
   item_image_created_on: string;
 }
+
 export interface ItemNameJson {
   id: string;
   source: string;
   text: string;
 }
+
 export namespace GenericLayoutJson {
   export interface NodeName {
     type: "text";
     text: string;
   }
+
   export interface NodeImage {
     type: "image";
     src: string;
     alt: string;
   }
+
   export interface NodeContainer {
     type: "container";
     children: Node[];
   }
+
   export interface Node {
     width?: number;
     height?: number;
@@ -118,52 +61,6 @@ export interface ItemSmall {
   item_name: string;
   item_slug: string;
   item_image_alt: string;
-}
-
-export interface ItemSmallWhere {
-  vendor_id?: string[];
-  gen_id?: number[];
-  br_id?: number[];
-  cat_id?: number[];
-  discount_percentage?: {
-    ">="?: number;
-    "<"?: number;
-    "<="?: number;
-    ">"?: number;
-  };
-  unit_mrp?: { ">="?: number; "<"?: number; "<="?: number; ">"?: number };
-  unit_price?: { ">="?: number; "<"?: number; "<="?: number; ">"?: number };
-  min_qty?: { ">="?: number; "<"?: number; "<="?: number; ">"?: number };
-  rating?: { ">="?: number; "<"?: number; "<="?: number; ">"?: number };
-}
-
-export const numCondition = (
-  name: string,
-  value?: { ">="?: number; "<"?: number; "<="?: number; ">"?: number }
-) => {
-  if (!value) return "";
-  const cond: Array<string> = [];
-  for (const key in value) {
-    if (Object.prototype.hasOwnProperty.call(value, key)) {
-      cond.push(`${name} ${key} ${value[key as keyof typeof value]}`);
-    }
-  }
-  return cond.join(" AND ");
-};
-
-export interface ItemSmallOrderBy {
-  vendor_id?: "ASC" | "DESC";
-  gen_id?: "ASC" | "DESC";
-  br_id?: "ASC" | "DESC";
-  cat_id?: "ASC" | "DESC";
-  unit_mrp?: "ASC" | "DESC";
-  unit_price?: "ASC" | "DESC";
-  min_qty?: "ASC" | "DESC";
-  discount_percentage?: "ASC" | "DESC";
-  xrank?: "ASC" | "DESC";
-  rating?: "ASC" | "DESC";
-  created_on?: "ASC" | "DESC";
-  modified_on?: "ASC" | "DESC";
 }
 
 export const defaultGenericLayoutJson: GenericLayoutJson.Node = {

@@ -1,31 +1,30 @@
 /**
  * @fileoverview Form for inputting ItemCarousel data.
  */
-"use client"
-import React from "react"
-import { useTagStore } from "../tag_zustand"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-import { Input } from "@/components/ui/input"
+"use client";
+import React from "react";
+import { useTagStore } from "../tag_zustand";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { OrderByList } from "../tag"
+} from "@/components/ui/select";
+import { OrderByList } from "../tag";
 
 const ItemCarouselForm: React.FC = () => {
-  const { selectedTag, updateChildren } = useTagStore()
+  const { selectedTag, updateChildren } = useTagStore();
   if (
     !!selectedTag &&
     !!selectedTag.children &&
     !!("itemCarousel" in selectedTag.children)
   ) {
-    const itemCarousel = selectedTag.children.itemCarousel
+    const itemCarousel = selectedTag.children.itemCarousel;
 
     return (
       <div className="space-y-4">
@@ -40,7 +39,7 @@ const ItemCarouselForm: React.FC = () => {
                   ...itemCarousel,
                   searchText: e.target.value,
                 },
-              })
+              });
             }}
             placeholder="Item search text"
             className="bg-white"
@@ -57,7 +56,7 @@ const ItemCarouselForm: React.FC = () => {
                   ...itemCarousel,
                   limit: +e.target.value,
                 },
-              })
+              });
             }}
             placeholder="Total items to be shown"
             className="bg-white"
@@ -74,10 +73,10 @@ const ItemCarouselForm: React.FC = () => {
                   ...itemCarousel,
                   orderBy,
                 },
-              })
+              });
             }}
           >
-            <SelectTrigger>
+            <SelectTrigger className="bg-white">
               <SelectValue placeholder="View by" />
             </SelectTrigger>
             <SelectContent>
@@ -103,7 +102,7 @@ const ItemCarouselForm: React.FC = () => {
                     ...itemCarousel,
                     pcShowController: checked,
                   },
-                })
+                });
               }}
             />
             <Label htmlFor="pc-show-controller">PC</Label>
@@ -118,7 +117,7 @@ const ItemCarouselForm: React.FC = () => {
                     ...itemCarousel,
                     wideShowController: checked,
                   },
-                })
+                });
               }}
             />
             <Label htmlFor="wide-show-controller">Wide Screen</Label>
@@ -133,7 +132,7 @@ const ItemCarouselForm: React.FC = () => {
                     ...itemCarousel,
                     ultraShowController: checked,
                   },
-                })
+                });
               }}
             />
             <Label htmlFor="ultra-show-controller">Ultra Wide</Label>
@@ -148,7 +147,7 @@ const ItemCarouselForm: React.FC = () => {
                     ...itemCarousel,
                     mobShowController: checked,
                   },
-                })
+                });
               }}
             />
             <Label htmlFor="mob-show-controller">Mobile</Label>
@@ -163,16 +162,16 @@ const ItemCarouselForm: React.FC = () => {
                     ...itemCarousel,
                     tabShowController: checked,
                   },
-                })
+                });
               }}
             />
             <Label htmlFor="tab-show-controller">Tablet</Label>
           </div>
         </div>
       </div>
-    )
+    );
   }
-  return <></>
-}
+  return <></>;
+};
 
-export default ItemCarouselForm
+export default ItemCarouselForm;
