@@ -6,7 +6,6 @@ import {
   replacePlaceholders,
 } from "./item";
 import Link from "next/link";
-import { ItemShimmerCarousel } from "./ItemShimmerServer";
 
 const textNode = ({
   text,
@@ -78,38 +77,17 @@ export const ItemNode: React.FC<{
   const layout = item.gen_layout_json || defaultGenericLayoutJson;
   const __html = node({ node: layout, item });
   return (
-    <div className="flex justify-center items-center">
-      <Link
-        href={`/item/${item.item_slug}/${item.item_id}`}
-        target="_blank"
-        className="hover:scale-105 transition-all duration-300 ease-in cursor-pointer"
-        dangerouslySetInnerHTML={{ __html }}
-      ></Link>
-    </div>
+    <Link
+      href={`/item/${item.item_slug}/${item.item_id}`}
+      target="_blank"
+      className="hover:scale-105 transition-all duration-300 ease-in cursor-pointer"
+      dangerouslySetInnerHTML={{ __html }}
+    ></Link>
   );
 });
 
-export const ItemNodeCarousel: React.FC<{
-  item: ItemSmall;
-  carouselContainerWidth: number;
-}> = memo(({ item, carouselContainerWidth }) => {
-  if (!item.gen_layout_json.width)
-    return (
-      <ItemShimmerCarousel carouselContainerWidth={carouselContainerWidth} />
-    );
-
-  const flexBasis = `${
-    (item.gen_layout_json.width / carouselContainerWidth) * 100
-  }%`;
+export const ItemShimmer: React.FC = memo(() => {
   return (
-    <div
-      role="group"
-      aria-roledescription="slide"
-      data-slot="carousel-item"
-      className="min-w-0 shrink-0 grow-0"
-      style={{ flexBasis }}
-    >
-      <ItemNode item={item} />
-    </div>
+    <div className="bg-slate-200/50 animate-pulse w-[100px] h-[100px] rounded-md"></div>
   );
 });

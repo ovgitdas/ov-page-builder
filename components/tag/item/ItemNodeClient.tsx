@@ -1,8 +1,9 @@
 "use client";
 import React, { ReactNode } from "react";
+import { ItemShimmer } from "./ItemNodeServer";
 
 const ItemNodeClient: React.FC<{
-  children: ReactNode;
+  children?: ReactNode;
   carouselContainerWidth: number;
 }> = ({ children, carouselContainerWidth }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -14,7 +15,7 @@ const ItemNodeClient: React.FC<{
         (width / carouselContainerWidth) * 100
       }%`;
     }
-  }, [nodeRef, containerRef]);
+  }, [nodeRef, containerRef, carouselContainerWidth]);
 
   return (
     <div
@@ -25,7 +26,7 @@ const ItemNodeClient: React.FC<{
       className="min-w-0 shrink-0 grow-0"
     >
       <div ref={nodeRef} className="flex justify-center items-center">
-        {children}
+        {children || <ItemShimmer />}
       </div>
     </div>
   );

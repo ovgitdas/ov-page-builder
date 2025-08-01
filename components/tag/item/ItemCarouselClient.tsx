@@ -8,7 +8,6 @@ import {
   CarouselContent,
 } from "@/components/ui/carousel";
 import { _loadItems } from "../../item/item_db_server";
-import ItemCardCarousel from "./ItemCardCarousel";
 import { ItemCarousel } from "../tag";
 import { useViewPort } from "../viewport_zustand";
 
@@ -27,7 +26,7 @@ import { useViewPort } from "../viewport_zustand";
 interface Props {
   itemCarousel: ItemCarousel;
 }
-const ItemCarouselComponent = ({ itemCarousel }: Props) => {
+const ItemCarouselClient = ({ itemCarousel }: Props) => {
   const ref = React.useRef<HTMLDivElement>(null);
   const [width, setWidth] = React.useState(0);
   const handleResize = () => {
@@ -118,4 +117,4 @@ const ItemCarouselComponent = ({ itemCarousel }: Props) => {
   );
 };
 
-export default ItemCarouselComponent;
+export default ItemCarouselClient;
