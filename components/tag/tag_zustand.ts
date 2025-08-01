@@ -401,7 +401,6 @@ export const useTagStore = create<{
             searchText: "",
             orderBy: "Recommended",
             limit: 40,
-            offset: 0,
             mobShowController: false,
             tabShowController: false,
             pcShowController: true,

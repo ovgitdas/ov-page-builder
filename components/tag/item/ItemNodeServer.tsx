@@ -1,22 +1,22 @@
-import React, { ReactNode, memo } from "react";
+import React, { ReactNode, memo } from "react"
 import {
   GenericLayoutJson,
-  ItemSmall,
+  Item,
   defaultGenericLayoutJson,
   replacePlaceholders,
-} from "./item";
-import Link from "next/link";
+} from "./item"
+import Link from "next/link"
 
 const textNode = ({
   text,
   style,
   item,
 }: {
-  text: string;
-  style: string;
-  item: ItemSmall;
+  text: string
+  style: string
+  item: Item
 }): string =>
-  `<div style="${style}">${replacePlaceholders(text, item as any)}</div>`;
+  `<div style="${style}">${replacePlaceholders(text, item as any)}</div>`
 
 const imageNode = ({
   src,
@@ -24,43 +24,43 @@ const imageNode = ({
   style,
   item,
 }: {
-  src: string;
-  alt: string;
-  style: string;
-  item: ItemSmall;
+  src: string
+  alt: string
+  style: string
+  item: Item
 }): string =>
   `<img style="${style}" src="${replacePlaceholders(
     src,
     item as any
-  )}" alt="${replacePlaceholders(alt, item as any)}" />`;
+  )}" alt="${replacePlaceholders(alt, item as any)}" />`
 
 const containerNode = ({
   children,
   style,
   item,
 }: {
-  children: Array<GenericLayoutJson.Node>;
-  style: string;
-  item: ItemSmall;
+  children: Array<GenericLayoutJson.Node>
+  style: string
+  item: Item
 }): string =>
   `<div style="${style}">${children
     .map((child) => node({ node: child, item }))
-    .join("")}</div>`;
+    .join("")}</div>`
 
 const node = ({
   node,
   item,
 }: {
-  node: GenericLayoutJson.Node;
-  item: ItemSmall;
+  node: GenericLayoutJson.Node
+  item: Item
 }): string => {
-  const { width, height, style, value } = node;
+  const { width, height, style, value } = node
   const widthx =
-    width !== null && width !== undefined ? `width: ${width}px;` : "";
+    width !== null && width !== undefined ? `width: ${width}px;` : ""
   const heightx =
-    height !== null && height !== undefined ? `height: ${height}px;` : "";
-  const stylex = !!style ? `${style}; ` : "";
-  const _style = `${stylex} ${widthx} ${heightx}`;
+    height !== null && height !== undefined ? `height: ${height}px;` : ""
+  const stylex = !!style ? `${style}; ` : ""
+  const _style = `${stylex} ${widthx} ${heightx}`
 
   return value.type === "text"
     ? textNode({ text: value.text, style: _style, item })
@@ -68,14 +68,14 @@ const node = ({
     ? imageNode({ src: value.src, alt: value.alt, style: _style, item })
     : value.type === "container"
     ? containerNode({ style: _style, item, children: value.children })
-    : "";
-};
+    : ""
+}
 
 export const ItemNode: React.FC<{
-  item: ItemSmall;
+  item: Item
 }> = memo(({ item }): ReactNode => {
-  const layout = item.gen_layout_json || defaultGenericLayoutJson;
-  const __html = node({ node: layout, item });
+  const layout = item.gen_layout_json || defaultGenericLayoutJson
+  const __html = node({ node: layout, item })
   return (
     <Link
       href={`/item/${item.item_slug}/${item.item_id}`}
@@ -83,11 +83,11 @@ export const ItemNode: React.FC<{
       className="hover:scale-105 transition-all duration-300 ease-in cursor-pointer"
       dangerouslySetInnerHTML={{ __html }}
     ></Link>
-  );
-});
+  )
+})
 
 export const ItemShimmer: React.FC = memo(() => {
   return (
     <div className="bg-slate-200/50 animate-pulse w-[100px] h-[100px] rounded-md"></div>
-  );
-});
+  )
+})

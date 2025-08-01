@@ -1,66 +1,61 @@
-export interface ItemImage {
-  item_id: string;
-  item_image_url: string;
-  item_image_created_on: string;
-}
-
 export interface ItemNameJson {
-  id: string;
-  source: string;
-  text: string;
+  id: string
+  source: string
+  text: string
 }
 
 export namespace GenericLayoutJson {
   export interface NodeName {
-    type: "text";
-    text: string;
+    type: "text"
+    text: string
   }
 
   export interface NodeImage {
-    type: "image";
-    src: string;
-    alt: string;
+    type: "image"
+    src: string
+    alt: string
   }
 
   export interface NodeContainer {
-    type: "container";
-    children: Node[];
+    type: "container"
+    children: Node[]
   }
 
   export interface Node {
-    width?: number;
-    height?: number;
-    style: string;
-    value: NodeName | NodeImage | NodeContainer;
+    width?: number
+    height?: number
+    style: string
+    value: NodeName | NodeImage | NodeContainer
   }
 }
 
-export interface ItemSmall {
-  item_id: string;
-  vendor_id: string;
-  gen_id: number;
-  br_id: number;
-  cat_id: number;
-  gst_id: number;
-  unit_mrp: number;
-  unit_price: number;
-  min_qty: number;
-  discount_percentage: number;
-  xrank: number;
-  rating: number;
-  created_on: string;
-  modified_on: string;
-  item_name_json: ItemNameJson[];
-  gen_name: string;
-  gen_layout_json: GenericLayoutJson.Node;
-  br_name: string;
-  br_cmp: string;
-  cat_name: string;
-  item_image_url: string;
+export interface Item {
+  item_id: string
+  active: number
+  vendor_id: string
+  gen_id: number
+  br_id: number
+  cat_id: number
+  gst_id: number
+  unit_mrp: number
+  unit_price: number
+  min_qty: number
+  discount_percentage: number
+  xrank: number
+  rating: number
+  created_on: string
+  modified_on: string
+  item_name_json: ItemNameJson[]
+  gen_name: string
+  gen_layout_json: GenericLayoutJson.Node
+  br_name: string
+  br_cmp: string
+  cat_name: string
+  item_image_url: string
   //derived later
-  item_name: string;
-  item_slug: string;
-  item_image_alt: string;
+  item_name: string
+  item_slug: string
+  item_image_alt: string
 }
 
 export const defaultGenericLayoutJson: GenericLayoutJson.Node = {
@@ -159,7 +154,7 @@ export const defaultGenericLayoutJson: GenericLayoutJson.Node = {
       },
     ],
   },
-};
+}
 
 function rating(rating: number) {
   const stars = [1, 2, 3, 4, 5]
@@ -169,27 +164,27 @@ function rating(rating: number) {
           star <= rating ? "#f1c40f" : "#cccccc"
         }; font-size:1.2rem;">★</span>`
     )
-    .join("");
-  return `<div>${rating} ${stars}</div>`;
+    .join("")
+  return `<div>${rating} ${stars}</div>`
 }
 
 export function replacePlaceholders(
   templateString: string,
   values: { [key: string]: string }
 ) {
-  let result = templateString;
+  let result = templateString
   for (const key in values) {
     if (Object.prototype.hasOwnProperty.call(values, key)) {
       // Create a regular expression to match {key} globally
       // The 'g' flag ensures all occurrences are replaced
       // The 'i' flag makes it case-insensitive (optional, but often useful for placeholders)
       // Escaping the curly braces as they are special characters in regex
-      const regex = new RegExp(`\\{${key}\\}`, "g");
+      const regex = new RegExp(`\\{${key}\\}`, "g")
       result = result.replace(
         regex,
         key === "rating" ? rating(+values[key]) : values[key]
-      );
+      )
     }
   }
-  return result;
+  return result
 }
