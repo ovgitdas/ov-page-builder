@@ -122,3 +122,25 @@ export interface Page {
   /** The root tag of the page, which contains the entire component tree. */
   root: Tag
 }
+
+export const defaultStyle = `
+  margin: 0 auto; 
+  padding: 0; 
+  width: 100%; 
+  height: 100%; 
+  display: flex; 
+  flex-direction: column; 
+  justify-content: center; 
+  align-items: center; 
+  text-align: center; 
+  font-family: sans-serif; 
+  font-size: 16px; 
+  line-height: 24px; 
+  color: #333; 
+  background-color: #fff; 
+  border: 1px solid #ccc; 
+  border-radius: 4px; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  overflow: hidden; 
+  cursor: pointer;
+  `
