@@ -10,7 +10,7 @@ import React from "react";
 import { Tag } from "./tag";
 import Link from "next/link";
 import Image from "next/image";
-import ImageCarouselComponent from "./link-image/ImageCarouselComponent";
+import ImageCarouselComponent from "./link-image/ImageCarouselClient";
 import ItemCarouselComponent from "./item/ItemCarouselClient";
 import { useViewPort } from "./viewport_zustand";
 import { getStyle, useTagStore } from "./tag_zustand";
@@ -62,9 +62,17 @@ const TagNode = ({ tag }: TagNodeProps) => {
           <TagNode tag={innerTag} key={index} />
         ))
       ) : tag.children && "imageCarousel" in tag.children ? (
-        <ImageCarouselComponent imageCarousel={tag.children.imageCarousel} />
+        <ImageCarouselComponent
+          imageCarousel={tag.children.imageCarousel}
+          deviceType={deviceType}
+        />
       ) : tag.children && "itemCarousel" in tag.children ? (
-        <ItemCarouselComponent itemCarousel={tag.children.itemCarousel} />
+        <ItemCarouselComponent
+          itemCarousel={tag.children.itemCarousel}
+          deviceType={deviceType}
+          searchItems={async () => []}
+          createSlug={() => ""}
+        />
       ) : tag.children && "linkImage" in tag.children ? (
         <Link href={tag.children.linkImage.href} target="_blank">
           <div className="relative w-full h-40">

@@ -5,7 +5,7 @@ import { ItemShimmer } from "./ItemNodeServer";
 const ItemNodeClient: React.FC<{
   children?: ReactNode;
   carouselContainerWidth: number;
-}> = ({ children, carouselContainerWidth }) => {
+}> = React.memo(({ children, carouselContainerWidth }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const nodeRef = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
@@ -30,6 +30,8 @@ const ItemNodeClient: React.FC<{
       </div>
     </div>
   );
-};
+});
+
+ItemNodeClient.displayName = "ItemNodeClient";
 
 export default ItemNodeClient;

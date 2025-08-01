@@ -11,6 +11,13 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
+  // Add a new configuration object to override the rule
+  {
+    rules: {
+      "@typescript-eslint/no-namespace": "off", // Disable the rule
+      "@typescript-eslint/no-explicit-any": "off", // Disable the rule
+    },
+  },
 ];
 
 export default eslintConfig;

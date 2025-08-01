@@ -10,12 +10,13 @@ import {
 } from "@/components/ui/carousel";
 import { ImageCarousel } from "../tag";
 import Link from "next/link";
-import { useViewPort } from "../viewport_zustand";
+import { DeviceType } from "../device";
+import Image from "next/image";
 
-interface Props {
+const ImageCarouselClient: React.FC<{
   imageCarousel: ImageCarousel;
-}
-const ImageCarouselComponent = ({ imageCarousel }: Props) => {
+  deviceType: DeviceType;
+}> = ({ imageCarousel, deviceType }) => {
   const { linkImages } = imageCarousel;
   const [api, setApi] = React.useState<CarouselApi>();
   const [scrollable, setScrollable] = React.useState({
@@ -37,8 +38,6 @@ const ImageCarouselComponent = ({ imageCarousel }: Props) => {
     Autoplay({ delay: 2000, stopOnInteraction: true })
   );
 
-  const { deviceType } = useViewPort();
-
   return (
     <div className="relative block h-full w-full overflow-hidden">
       <Carousel
@@ -50,7 +49,7 @@ const ImageCarouselComponent = ({ imageCarousel }: Props) => {
           {linkImages.map((linkImage, i) => (
             <CarouselItem key={i}>
               <Link href={linkImage.href}>
-                <img
+                <Image
                   alt={linkImage.alt}
                   src={linkImage.src}
                   className="w-full h-full object-cover"
@@ -110,4 +109,4 @@ const ImageCarouselComponent = ({ imageCarousel }: Props) => {
   );
 };
 
-export default ImageCarouselComponent;
+export default ImageCarouselClient;
