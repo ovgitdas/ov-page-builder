@@ -3,7 +3,7 @@
  * a single node in the tag hierarchy within the Tag Builder's navigation panel.
  */
 "use client";
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { Tag } from "./tag";
 import { useTagStore } from "./tag_zustand";
 import { cn } from "@/lib/utils";
@@ -29,7 +29,7 @@ interface TagNavNodeProps {
  * @param {TagNavNodeProps} props - The props for the component.
  * @returns {JSX.Element | null} The rendered TagNavNode component or null if tag is invalid.
  */
-export const TagNavNode: React.FC<TagNavNodeProps> = ({ tag, level }) => {
+export const TagNavNode: React.FC<TagNavNodeProps> = memo(({ tag, level }) => {
   const { selectedTag, setSelectedTag } = useTagStore();
   const [isExpanded, setIsExpanded] = useState(true); // Default to expanded
 
@@ -84,4 +84,4 @@ export const TagNavNode: React.FC<TagNavNodeProps> = ({ tag, level }) => {
       )}
     </div>
   );
-};
+});

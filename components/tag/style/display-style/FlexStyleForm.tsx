@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -15,7 +15,7 @@ import Card from "../Card";
 const FlexStyleForm: React.FC<{
   style?: FlexStyle;
   onChange: (style: FlexStyle) => void;
-}> = ({ style, onChange }) => {
+}> = memo(({ style, onChange }) => {
   const [styleInput, setStyleInput] = useState<FlexStyle>({});
 
   useEffect(() => {
@@ -184,6 +184,6 @@ const FlexStyleForm: React.FC<{
       </div>
     </Card>
   );
-};
+});
 
 export default FlexStyleForm;

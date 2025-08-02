@@ -6,7 +6,7 @@
  * (which can contain text, other tags, or specialized components), `Link` with `Image`, and carousel components.
  */
 
-import React from "react";
+import React, { memo } from "react";
 import { Tag } from "./tag";
 import Link from "next/link";
 import Image from "next/image";
@@ -31,7 +31,7 @@ interface TagNodeProps {
  *   - Otherwise, it renders a div with optional text, nested tags, image carousel, or item carousel.
  * @returns The rendered tag node as a React element.
  */
-const TagNode = ({ tag }: TagNodeProps) => {
+const TagNode = memo(({ tag }: TagNodeProps) => {
   const ref = React.useRef<HTMLDivElement>(null);
   const { deviceType } = useViewPort();
   const { selectedTag } = useTagStore();
@@ -90,6 +90,6 @@ const TagNode = ({ tag }: TagNodeProps) => {
       )}
     </div>
   );
-};
+});
 
 export default TagNode;

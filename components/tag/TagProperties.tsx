@@ -23,10 +23,11 @@ import ItemCarouselForm from "./item/ItemCarouselForm";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import LinkImageCarouselForm from "./link-image/ImageCarouselForm";
 import { LinkImageInput } from "./link-image/LinkImageInput";
-// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import StyleGenerator from "./style/StyleGenerator";
+import { memo } from "react";
 
-export const TagProperties = () => {
+export const TagProperties: React.FC = memo(() => {
   const {
     page,
     selectedTag,
@@ -130,61 +131,6 @@ export const TagProperties = () => {
             <div className="text-xs">Move Down</div>
           </Button>
         </div>
-        <StyleGenerator
-          value={selectedTag.pcStyle}
-          onChange={(value) => {
-            setStyle(value, "pc");
-          }}
-        />
-        {/* <Tabs defaultValue="account" className="w-[400px]">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="standard-screen">Standard</TabsTrigger>
-            <TabsTrigger value="wide-screen">Wide</TabsTrigger>
-            <TabsTrigger value="ultra-screen">Ultra</TabsTrigger>
-            <TabsTrigger value="tablet-screen">Tablet</TabsTrigger>
-            <TabsTrigger value="mobile-screen">Mobile</TabsTrigger>
-          </TabsList>
-          <TabsContent value="standard-screen">
-            <StyleGenerator
-              value={selectedTag.pcStyle}
-              onChange={(value) => {
-                setStyle(value, "pc");
-              }}
-            />
-          </TabsContent>
-          <TabsContent value="wide-screen">
-            <StyleGenerator
-              value={selectedTag.wideStyle}
-              onChange={(value) => {
-                setStyle(value, "wide");
-              }}
-            />
-          </TabsContent>
-          <TabsContent value="ultra-screen">
-            <StyleGenerator
-              value={selectedTag.ultraStyle}
-              onChange={(value) => {
-                setStyle(value, "ultra");
-              }}
-            />
-          </TabsContent>
-          <TabsContent value="tablet-screen">
-            <StyleGenerator
-              value={selectedTag.tabStyle}
-              onChange={(value) => {
-                setStyle(value, "tab");
-              }}
-            />
-          </TabsContent>
-          <TabsContent value="mobile-screen">
-            <StyleGenerator
-              value={selectedTag.mobStyle}
-              onChange={(value) => {
-                setStyle(value, "mob");
-              }}
-            />
-          </TabsContent>
-        </Tabs> */}
         <div className="flex gap-2 justify-center items-center">
           <Select
             onValueChange={(value: TagChildrenType) =>
@@ -254,6 +200,55 @@ export const TagProperties = () => {
           <p className="text-muted-foreground">No text children to display.</p>
         )}
       </div>
+      <Tabs defaultValue="account" className="w-[400px]">
+        <TabsList className="flex gap-1">
+          <TabsTrigger value="standard-screen">Standard</TabsTrigger>
+          <TabsTrigger value="wide-screen">Wide</TabsTrigger>
+          <TabsTrigger value="ultra-screen">Ultra</TabsTrigger>
+          <TabsTrigger value="tablet-screen">Tablet</TabsTrigger>
+          <TabsTrigger value="mobile-screen">Mobile</TabsTrigger>
+        </TabsList>
+        <TabsContent value="standard-screen">
+          <StyleGenerator
+            value={selectedTag.pcStyle}
+            onChange={(value) => {
+              setStyle(value, "pc");
+            }}
+          />
+        </TabsContent>
+        <TabsContent value="wide-screen">
+          <StyleGenerator
+            value={selectedTag.wideStyle}
+            onChange={(value) => {
+              setStyle(value, "wide");
+            }}
+          />
+        </TabsContent>
+        <TabsContent value="ultra-screen">
+          <StyleGenerator
+            value={selectedTag.ultraStyle}
+            onChange={(value) => {
+              setStyle(value, "ultra");
+            }}
+          />
+        </TabsContent>
+        <TabsContent value="tablet-screen">
+          <StyleGenerator
+            value={selectedTag.tabStyle}
+            onChange={(value) => {
+              setStyle(value, "tab");
+            }}
+          />
+        </TabsContent>
+        <TabsContent value="mobile-screen">
+          <StyleGenerator
+            value={selectedTag.mobStyle}
+            onChange={(value) => {
+              setStyle(value, "mob");
+            }}
+          />
+        </TabsContent>
+      </Tabs>
     </div>
   );
-};
+});

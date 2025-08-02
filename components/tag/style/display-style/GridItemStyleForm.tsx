@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -15,7 +15,7 @@ import { GridItemStyle, gridItem } from "./display-style-data";
 const GridItemStyleForm: React.FC<{
   style: GridItemStyle;
   onChange: (style: GridItemStyle) => void;
-}> = ({ style, onChange }) => {
+}> = memo(({ style, onChange }) => {
   const [styleInput, setStyleInput] = useState<GridItemStyle>({});
 
   useEffect(() => {
@@ -111,6 +111,6 @@ const GridItemStyleForm: React.FC<{
       </Card>
     </div>
   );
-};
+});
 
 export default GridItemStyleForm;

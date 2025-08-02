@@ -336,7 +336,8 @@ export const useTagStore = create<{
   },
 
   setStyle(style: Style, deviceType: DeviceType) {
-    const { page, selectedTag } = get();
+    const { page, selectedTag, history } = get();
+    const _history = JSON.parse(JSON.stringify({ page, selectedTag }));
     if (!selectedTag) return;
     const { id } = selectedTag;
     const tag = findTag(id, [page.root]);
@@ -348,7 +349,11 @@ export const useTagStore = create<{
     tag.tabStyle = deviceType === "tab" ? style : tag.tabStyle;
     const _page = JSON.parse(JSON.stringify(page));
     const _selectedTag = findTag(id, [_page.root]);
-    set({ page: _page, selectedTag: _selectedTag });
+    set({
+      page: _page,
+      selectedTag: _selectedTag,
+      history: [...history, _history],
+    });
   },
 
   changeChildrenType(type: TagChildrenType) {

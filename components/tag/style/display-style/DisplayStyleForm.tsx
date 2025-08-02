@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -16,7 +16,7 @@ import Card from "../Card";
 const DisplayStyleForm: React.FC<{
   style?: DisplayStyle;
   onChange: (style: DisplayStyle) => void;
-}> = ({ style, onChange }) => {
+}> = memo(({ style, onChange }) => {
   const [styleInput, setStyleInput] = useState<DisplayStyle>({});
 
   useEffect(() => {
@@ -72,6 +72,6 @@ const DisplayStyleForm: React.FC<{
       )}
     </Card>
   );
-};
+});
 
 export default DisplayStyleForm;

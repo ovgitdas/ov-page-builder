@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -34,14 +34,11 @@ import Card from "./Card";
 const StyleGenerator: React.FC<{
   value?: Style;
   onChange: (value: Style) => void;
-}> = ({ value, onChange }) => {
-  const [styleInput, setStyleInput] = useState<Style>({
-    display: { display: "block" },
-  });
+}> = memo(({ value, onChange }) => {
+  const [styleInput, setStyleInput] = useState<Style>({});
 
   useEffect(() => {
-    if (!value) return;
-    setStyleInput(value);
+    setStyleInput(value || {});
   }, [value]);
 
   // A generic onChange handler for Input fields
@@ -426,6 +423,6 @@ const StyleGenerator: React.FC<{
       </AccordionItem>
     </Accordion>
   );
-};
+});
 
 export default StyleGenerator;

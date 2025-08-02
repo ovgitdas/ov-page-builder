@@ -3,7 +3,7 @@
  * It assembles the navigation, view, and properties panels into a single page.
  */
 "use client";
-import React from "react";
+import React, { memo } from "react";
 import { useTagStore } from "./tag_zustand";
 import { TagProperties } from "./TagProperties";
 import TagNode from "./TagNode";
@@ -17,7 +17,7 @@ import ViewPort from "./ViewPort";
  *
  * @returns {JSX.Element} The rendered Tag Builder page.
  */
-const TagBuilderPage: React.FC = () => {
+const TagBuilderPage: React.FC = memo(() => {
   const { page, setSelectedTag } = useTagStore();
   React.useEffect(() => {
     setSelectedTag(page.root.id);
@@ -49,6 +49,6 @@ const TagBuilderPage: React.FC = () => {
       </div>
     </>
   );
-};
+});
 
 export default TagBuilderPage;
