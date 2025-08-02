@@ -7,6 +7,7 @@
 import { create } from "zustand";
 import { Page, Tag, TagChildren, TagChildrenType } from "./tag";
 import { DeviceType } from "./device";
+import { Style, styleGenerator } from "./style/style-data";
 
 const findTag = (id: number, tags: Array<Tag>): Tag | null => {
   if (!id || !tags) return null;
@@ -97,7 +98,7 @@ export const useTagStore = create<{
   /** Moves a tag down in the tag hierarchy. */
   down: () => void;
   /** Sets the style for a tag. */
-  setStyle: (style: string, deviceType: DeviceType) => void;
+  setStyle: (style: Style, deviceType: DeviceType) => void;
   /** Changes the type of children for a tag. */
   changeChildrenType: (type: TagChildrenType) => void;
   /** Updates the children of a tag. */
@@ -334,7 +335,7 @@ export const useTagStore = create<{
     }
   },
 
-  setStyle(style: string, deviceType: DeviceType) {
+  setStyle(style: Style, deviceType: DeviceType) {
     const { page, selectedTag } = get();
     if (!selectedTag) return;
     const { id } = selectedTag;
@@ -445,7 +446,7 @@ export const useTagStore = create<{
 }));
 
 export const getStyle = (tag: Tag, deviceType: DeviceType): string => {
-  return (
+  return styleGenerator(
     (deviceType === "mob"
       ? tag.mobStyle || tag.tabStyle
       : deviceType === "tab"
@@ -455,12 +456,12 @@ export const getStyle = (tag: Tag, deviceType: DeviceType): string => {
       : deviceType === "ultra"
       ? tag.ultraStyle || tag.wideStyle
       : tag.pcStyle) ||
-    tag.pcStyle ||
-    tag.tabStyle ||
-    tag.mobStyle ||
-    tag.wideStyle ||
-    tag.ultraStyle ||
-    ""
+      tag.pcStyle ||
+      tag.tabStyle ||
+      tag.mobStyle ||
+      tag.wideStyle ||
+      tag.ultraStyle ||
+      {}
   );
 };
 

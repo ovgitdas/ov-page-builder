@@ -1,5 +1,4 @@
 "use client";
-
 import { childrenTypes, getChildrenType, useTagStore } from "./tag_zustand";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -21,10 +20,11 @@ import { DeleteIcon } from "../icons/DeleteIcon";
 import { AppendIcon } from "../icons/AppendIcon";
 import { CloneIcon } from "../icons/CloneIcon";
 import ItemCarouselForm from "./item/ItemCarouselForm";
-import { useViewPort } from "./viewport_zustand";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import LinkImageCarouselForm from "./link-image/ImageCarouselForm";
 import { LinkImageInput } from "./link-image/LinkImageInput";
+// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import StyleGenerator from "./style/StyleGenerator";
 
 export const TagProperties = () => {
   const {
@@ -46,7 +46,6 @@ export const TagProperties = () => {
     changeChildrenType,
     updateChildren,
   } = useTagStore();
-  const { deviceType } = useViewPort();
 
   if (!selectedTag) {
     return <div>No tag selected</div>;
@@ -131,63 +130,61 @@ export const TagProperties = () => {
             <div className="text-xs">Move Down</div>
           </Button>
         </div>
-        <div>
-          <Label htmlFor="style">PC Style</Label>
-          <Textarea
-            id="style"
-            value={selectedTag.pcStyle || ""}
-            onChange={(e) => setStyle(e.target.value, "pc")}
-            className="bg-white"
-          />
-        </div>
-        {deviceType === "tab" && (
-          <div>
-            <Label htmlFor="tabStyle">Tablet Style</Label>
-            <Textarea
-              disabled={deviceType !== "tab"}
-              id="tabStyle"
-              value={selectedTag.tabStyle || ""}
-              onChange={(e) => setStyle(e.target.value, "tab")}
-              className="bg-yellow-100"
+        <StyleGenerator
+          value={selectedTag.pcStyle}
+          onChange={(value) => {
+            setStyle(value, "pc");
+          }}
+        />
+        {/* <Tabs defaultValue="account" className="w-[400px]">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="standard-screen">Standard</TabsTrigger>
+            <TabsTrigger value="wide-screen">Wide</TabsTrigger>
+            <TabsTrigger value="ultra-screen">Ultra</TabsTrigger>
+            <TabsTrigger value="tablet-screen">Tablet</TabsTrigger>
+            <TabsTrigger value="mobile-screen">Mobile</TabsTrigger>
+          </TabsList>
+          <TabsContent value="standard-screen">
+            <StyleGenerator
+              value={selectedTag.pcStyle}
+              onChange={(value) => {
+                setStyle(value, "pc");
+              }}
             />
-          </div>
-        )}
-        {deviceType === "mob" && (
-          <div>
-            <Label htmlFor="mobStyle">Mobile Style</Label>
-            <Textarea
-              disabled={deviceType !== "mob"}
-              id="mobStyle"
-              value={selectedTag.mobStyle || ""}
-              onChange={(e) => setStyle(e.target.value, "mob")}
-              className="bg-yellow-100"
+          </TabsContent>
+          <TabsContent value="wide-screen">
+            <StyleGenerator
+              value={selectedTag.wideStyle}
+              onChange={(value) => {
+                setStyle(value, "wide");
+              }}
             />
-          </div>
-        )}
-        {deviceType === "wide" && (
-          <div>
-            <Label htmlFor="wideStyle">Wide Style</Label>
-            <Textarea
-              disabled={deviceType !== "wide"}
-              id="wideStyle"
-              value={selectedTag.wideStyle || ""}
-              onChange={(e) => setStyle(e.target.value, "wide")}
-              className="bg-yellow-100"
+          </TabsContent>
+          <TabsContent value="ultra-screen">
+            <StyleGenerator
+              value={selectedTag.ultraStyle}
+              onChange={(value) => {
+                setStyle(value, "ultra");
+              }}
             />
-          </div>
-        )}
-        {deviceType === "ultra" && (
-          <div>
-            <Label htmlFor="ultraStyle">Ultra Style</Label>
-            <Textarea
-              disabled={deviceType !== "ultra"}
-              id="ultraStyle"
-              value={selectedTag.ultraStyle || ""}
-              onChange={(e) => setStyle(e.target.value, "ultra")}
-              className="bg-yellow-100"
+          </TabsContent>
+          <TabsContent value="tablet-screen">
+            <StyleGenerator
+              value={selectedTag.tabStyle}
+              onChange={(value) => {
+                setStyle(value, "tab");
+              }}
             />
-          </div>
-        )}
+          </TabsContent>
+          <TabsContent value="mobile-screen">
+            <StyleGenerator
+              value={selectedTag.mobStyle}
+              onChange={(value) => {
+                setStyle(value, "mob");
+              }}
+            />
+          </TabsContent>
+        </Tabs> */}
         <div className="flex gap-2 justify-center items-center">
           <Select
             onValueChange={(value: TagChildrenType) =>

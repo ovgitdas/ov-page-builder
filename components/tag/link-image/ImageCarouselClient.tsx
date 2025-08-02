@@ -11,7 +11,6 @@ import {
 import { ImageCarousel } from "../tag";
 import Link from "next/link";
 import { DeviceType } from "../device";
-import Image from "next/image";
 
 const ImageCarouselClient: React.FC<{
   imageCarousel: ImageCarousel;
@@ -49,7 +48,7 @@ const ImageCarouselClient: React.FC<{
           {linkImages.map((linkImage, i) => (
             <CarouselItem key={i}>
               <Link href={linkImage.href}>
-                <Image
+                <img
                   alt={linkImage.alt}
                   src={linkImage.src}
                   className="w-full h-full object-cover"

@@ -22,11 +22,16 @@ const ItemCarouselClient: React.FC<{
   const [width, setWidth] = React.useState(0);
 
   const listen = React.useCallback(() => {
-    if (!!ref.current) {
-      const handleResize = () => setWidth(ref.current!.clientWidth);
-      ref.current.addEventListener("resize", handleResize);
-      return () => ref.current!.removeEventListener("resize", handleResize);
-    }
+    if (!ref.current) return;
+    const handleResize = () => {
+      if (!ref.current) return;
+      setWidth(ref.current.clientWidth);
+    };
+    ref.current.addEventListener("resize", handleResize);
+    return () => {
+      if (!ref.current) return;
+      ref.current.removeEventListener("resize", handleResize);
+    };
   }, [ref]);
 
   React.useEffect(listen, [ref, listen]);
