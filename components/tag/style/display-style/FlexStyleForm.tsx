@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, memo } from "react";
+import React, { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -8,24 +8,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
 import { FlexStyle, flex } from "./display-style-data";
 import Card from "../Card";
+import { deepEqual } from "../../util";
+import DatalistInput from "../DatalistInput";
 
 const FlexStyleForm: React.FC<{
   style?: FlexStyle;
   onChange: (style: FlexStyle) => void;
-}> = memo(({ style, onChange }) => {
+}> = ({ style, onChange }) => {
   const [styleInput, setStyleInput] = useState<FlexStyle>({});
 
   useEffect(() => {
-    setStyleInput(style || {});
+    if (!deepEqual(style, styleInput)) {
+      setStyleInput(style || {});
+    }
   }, [style]);
 
-  const _setStyleInput = (newStyle: FlexStyle) => {
-    setStyleInput(newStyle);
-    onChange(newStyle);
-  };
+  useEffect(() => {
+    onChange(styleInput);
+  }, [styleInput]);
 
   console.log("flex-style");
 
@@ -38,7 +40,7 @@ const FlexStyleForm: React.FC<{
           <Label className="text-xs">Direction</Label>
           <Select
             onValueChange={(value: (typeof flex.flexDirection)[number]) =>
-              _setStyleInput({ ...styleInput, flexDirection: value })
+              setStyleInput({ ...styleInput, flexDirection: value })
             }
             defaultValue={(styleInput ? styleInput.flexDirection : "") || ""}
           >
@@ -60,7 +62,7 @@ const FlexStyleForm: React.FC<{
           <Label className="text-xs">Wrap</Label>
           <Select
             onValueChange={(value: (typeof flex.flexWrap)[number]) =>
-              _setStyleInput({ ...styleInput, flexWrap: value })
+              setStyleInput({ ...styleInput, flexWrap: value })
             }
             defaultValue={(styleInput ? styleInput.flexWrap : "") || ""}
           >
@@ -83,7 +85,7 @@ const FlexStyleForm: React.FC<{
           <Label className="text-xs">Justify Content</Label>
           <Select
             onValueChange={(value: (typeof flex.justifyContent)[number]) =>
-              _setStyleInput({ ...styleInput, justifyContent: value })
+              setStyleInput({ ...styleInput, justifyContent: value })
             }
             defaultValue={(styleInput ? styleInput.justifyContent : "") || ""}
           >
@@ -105,7 +107,7 @@ const FlexStyleForm: React.FC<{
           <Label className="text-xs">Align Items</Label>
           <Select
             onValueChange={(value: (typeof flex.alignItems)[number]) =>
-              _setStyleInput({ ...styleInput, alignItems: value })
+              setStyleInput({ ...styleInput, alignItems: value })
             }
             defaultValue={(styleInput ? styleInput.alignItems : "") || ""}
           >
@@ -128,7 +130,7 @@ const FlexStyleForm: React.FC<{
           <Label className="text-xs">Align Content</Label>
           <Select
             onValueChange={(value: (typeof flex.alignContent)[number]) =>
-              _setStyleInput({ ...styleInput, alignContent: value })
+              setStyleInput({ ...styleInput, alignContent: value })
             }
             defaultValue={(styleInput ? styleInput.alignContent : "") || ""}
           >
@@ -146,37 +148,38 @@ const FlexStyleForm: React.FC<{
         </div>
 
         {/* Gap */}
-        <div>
-          <Label className="text-xs">Gap</Label>
-          <Input
+        <div className="space-y-2">
+          <DatalistInput
+            id="gap"
+            label="Gap"
             value={styleInput.gap || ""}
-            onChange={(e) =>
-              _setStyleInput({ ...styleInput, gap: e.target.value })
-            }
+            onChange={(value) => setStyleInput({ ...styleInput, gap: value })}
             placeholder="e.g., 16px or 1rem"
           />
         </div>
       </div>
       <div className="grid grid-cols-2 gap-1">
         {/* FlexStyle Grow */}
-        <div>
-          <Label className="text-xs">Grow</Label>
-          <Input
+        <div className="space-y-2">
+          <DatalistInput
+            id="flexGrow"
+            label="Grow"
             value={styleInput.flexGrow || ""}
-            onChange={(e) =>
-              _setStyleInput({ ...styleInput, flexGrow: e.target.value })
+            onChange={(value) =>
+              setStyleInput({ ...styleInput, flexGrow: value })
             }
             placeholder="e.g., 1 or 0"
           />
         </div>
 
         {/* FlexStyle Shrink */}
-        <div>
-          <Label className="text-xs">Shrink</Label>
-          <Input
+        <div className="space-y-2">
+          <DatalistInput
+            id="flexShrink"
+            label="Shrink"
             value={styleInput.flexShrink || ""}
-            onChange={(e) =>
-              _setStyleInput({ ...styleInput, flexShrink: e.target.value })
+            onChange={(value) =>
+              setStyleInput({ ...styleInput, flexShrink: value })
             }
             placeholder="e.g., 1 or 0"
           />
@@ -184,6 +187,6 @@ const FlexStyleForm: React.FC<{
       </div>
     </Card>
   );
-});
+};
 
 export default FlexStyleForm;

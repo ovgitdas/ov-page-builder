@@ -29,7 +29,7 @@ interface TagNavNodeProps {
  * @param {TagNavNodeProps} props - The props for the component.
  * @returns {JSX.Element | null} The rendered TagNavNode component or null if tag is invalid.
  */
-export const TagNavNode: React.FC<TagNavNodeProps> = memo(({ tag, level }) => {
+const TagNavNode: React.FC<TagNavNodeProps> = memo(({ tag, level }) => {
   const { selectedTag, setSelectedTag } = useTagStore();
   const [isExpanded, setIsExpanded] = useState(true); // Default to expanded
 
@@ -85,3 +85,6 @@ export const TagNavNode: React.FC<TagNavNodeProps> = memo(({ tag, level }) => {
     </div>
   );
 });
+
+TagNavNode.displayName = "TagNavNode";
+export default TagNavNode;

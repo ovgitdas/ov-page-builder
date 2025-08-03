@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, memo } from "react";
+import React, { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -8,66 +8,95 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { GridStyle, grid } from "./display-style-data";
+import {
+  GridStyle,
+  grid,
+  gridTemplateAreasValues,
+  gridTemplateColumnsValues,
+  gridTemplateRowsValues,
+} from "./display-style-data";
 import Card from "../Card";
+import DatalistInput from "../DatalistInput";
+import { deepEqual } from "../../util";
 
 const GridStyleForm: React.FC<{
   style?: GridStyle;
   onChange: (style: GridStyle) => void;
-}> = memo(({ style, onChange }) => {
+}> = ({ style, onChange }) => {
   const [styleInput, setStyleInput] = useState<GridStyle>({});
 
   useEffect(() => {
-    setStyleInput(style || {});
+    if (!deepEqual(style, styleInput)) {
+      setStyleInput(style || {});
+    }
   }, [style]);
 
-  const _setStyleInput = (newStyle: GridStyle) => {
-    setStyleInput(newStyle);
-    onChange(newStyle);
-  };
-
-  console.log("grid-style");
+  useEffect(() => {
+    onChange(styleInput);
+  }, [styleInput]);
 
   return (
     <Card>
       {/* Configuration Section */}
-      {/* GridStyle Template Columns */}
-      <div className="space-y-2">
-        <Label className="text-xs">Columns</Label>
-        <Input
-          value={styleInput.gridTemplateColumns || ""}
-          onChange={(e) =>
-            _setStyleInput({
-              ...styleInput,
-              gridTemplateColumns: e.target.value,
-            })
-          }
-          placeholder="e.g., 1fr 2fr 1fr"
-        />
-      </div>
       <div className="grid grid-cols-2 gap-1">
+        {/* GridStyle Template Columns */}
+        <div className="space-y-2">
+          <DatalistInput
+            id="gridTemplateColumns"
+            label="Columns"
+            value={styleInput.gridTemplateColumns || ""}
+            onChange={(value) =>
+              setStyleInput({
+                ...styleInput,
+                gridTemplateColumns: value,
+              })
+            }
+            placeholder="e.g., 1fr 2fr 1fr"
+            options={gridTemplateColumnsValues}
+          />
+        </div>
         {/* GridStyle Template Rows */}
         <div className="space-y-2">
-          <Label className="text-xs">Rows</Label>
-          <Input
+          <DatalistInput
+            id="gridTemplateRows"
+            label="Rows"
             value={styleInput.gridTemplateRows || ""}
-            onChange={(e) =>
-              _setStyleInput({
+            onChange={(value) =>
+              setStyleInput({
                 ...styleInput,
-                gridTemplateRows: e.target.value,
+                gridTemplateRows: value,
               })
             }
             placeholder="e.g., 100px auto"
+            options={gridTemplateRowsValues}
+          />
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-1">
+        {/* GridStyle Template Areas */}
+        <div className="space-y-2">
+          <DatalistInput
+            id="gridTemplateAreas"
+            label="Areas"
+            value={styleInput.gridTemplateAreas || ""}
+            onChange={(value) =>
+              setStyleInput({
+                ...styleInput,
+                gridTemplateAreas: value,
+              })
+            }
+            placeholder="e.g., 'header main footer'"
+            options={gridTemplateAreasValues}
           />
         </div>
         {/* GridStyle Gap */}
         <div className="space-y-2">
-          <Label className="text-xs">GridStyle Gap</Label>
-          <Input
+          <DatalistInput
+            id="gridGap"
+            label="Grid gap"
             value={styleInput.gridGap || ""}
-            onChange={(e) =>
-              _setStyleInput({ ...styleInput, gridGap: e.target.value })
+            onChange={(value) =>
+              setStyleInput({ ...styleInput, gridGap: value })
             }
             placeholder="e.g., 1rem"
           />
@@ -77,22 +106,24 @@ const GridStyleForm: React.FC<{
       <div className="grid grid-cols-2 gap-1">
         {/* Row Gap */}
         <div className="space-y-2">
-          <Label className="text-xs">Row Gap</Label>
-          <Input
+          <DatalistInput
+            id="rowGap"
+            label="Row gap"
             value={styleInput.rowGap || ""}
-            onChange={(e) =>
-              _setStyleInput({ ...styleInput, rowGap: e.target.value })
+            onChange={(value) =>
+              setStyleInput({ ...styleInput, rowGap: value })
             }
             placeholder="e.g., 10px"
           />
         </div>
         {/* Column Gap */}
         <div className="space-y-2">
-          <Label className="text-xs">Column Gap</Label>
-          <Input
+          <DatalistInput
+            id="columnGap"
+            label="Column gap"
             value={styleInput.columnGap || ""}
-            onChange={(e) =>
-              _setStyleInput({ ...styleInput, columnGap: e.target.value })
+            onChange={(value) =>
+              setStyleInput({ ...styleInput, columnGap: value })
             }
             placeholder="e.g., 10px"
           />
@@ -104,7 +135,7 @@ const GridStyleForm: React.FC<{
           <Label className="text-xs">Justify Items</Label>
           <Select
             onValueChange={(value: (typeof grid.justifyItems)[number]) =>
-              _setStyleInput({ ...styleInput, justifyItems: value })
+              setStyleInput({ ...styleInput, justifyItems: value })
             }
             defaultValue={styleInput.justifyItems || "stretch"}
           >
@@ -125,7 +156,7 @@ const GridStyleForm: React.FC<{
           <Label className="text-xs">Align Items</Label>
           <Select
             onValueChange={(value: (typeof grid.alignItems)[number]) =>
-              _setStyleInput({ ...styleInput, alignItems: value })
+              setStyleInput({ ...styleInput, alignItems: value })
             }
             defaultValue={styleInput.alignItems || "stretch"}
           >
@@ -148,7 +179,7 @@ const GridStyleForm: React.FC<{
           <Label className="text-xs">Justify Content</Label>
           <Select
             onValueChange={(value: (typeof grid.justifyContent)[number]) =>
-              _setStyleInput({ ...styleInput, justifyContent: value })
+              setStyleInput({ ...styleInput, justifyContent: value })
             }
             defaultValue={styleInput.justifyContent || "stretch"}
           >
@@ -170,7 +201,7 @@ const GridStyleForm: React.FC<{
           <Label className="text-xs">Align Content</Label>
           <Select
             onValueChange={(value: (typeof grid.alignContent)[number]) =>
-              _setStyleInput({ ...styleInput, alignContent: value })
+              setStyleInput({ ...styleInput, alignContent: value })
             }
             defaultValue={styleInput.alignContent || "stretch"}
           >
@@ -189,6 +220,6 @@ const GridStyleForm: React.FC<{
       </div>
     </Card>
   );
-});
+};
 
 export default GridStyleForm;

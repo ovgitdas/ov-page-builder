@@ -22,12 +22,13 @@ import { CloneIcon } from "../icons/CloneIcon";
 import ItemCarouselForm from "./item/ItemCarouselForm";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import LinkImageCarouselForm from "./link-image/ImageCarouselForm";
-import { LinkImageInput } from "./link-image/LinkImageInput";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import LinkImageInput from "./link-image/LinkImageInput";
 import StyleGenerator from "./style/StyleGenerator";
-import { memo } from "react";
+import { memo, useState } from "react";
+import { DeviceType } from "./device";
+import { cn } from "@/lib/utils";
 
-export const TagProperties: React.FC = memo(() => {
+const TagProperties: React.FC = memo(() => {
   const {
     page,
     selectedTag,
@@ -47,6 +48,8 @@ export const TagProperties: React.FC = memo(() => {
     changeChildrenType,
     updateChildren,
   } = useTagStore();
+
+  const [selectedStyle, setSelectedStyle] = useState<DeviceType>("pc");
 
   if (!selectedTag) {
     return <div>No tag selected</div>;
@@ -200,55 +203,89 @@ export const TagProperties: React.FC = memo(() => {
           <p className="text-muted-foreground">No text children to display.</p>
         )}
       </div>
-      <Tabs defaultValue="account" className="w-[400px]">
-        <TabsList className="flex gap-1">
-          <TabsTrigger value="standard-screen">Standard</TabsTrigger>
-          <TabsTrigger value="wide-screen">Wide</TabsTrigger>
-          <TabsTrigger value="ultra-screen">Ultra</TabsTrigger>
-          <TabsTrigger value="tablet-screen">Tablet</TabsTrigger>
-          <TabsTrigger value="mobile-screen">Mobile</TabsTrigger>
-        </TabsList>
-        <TabsContent value="standard-screen">
+      <div defaultValue="pc-screen" className="bg-gray-100 p-2 pb-0 rounded-sm">
+        <div className="flex justify-evenly items-center gap-1 w-full text-xs">
+          <div
+            onClick={() => setSelectedStyle("ultra")}
+            className={cn(
+              selectedStyle === "ultra"
+                ? "bg-blue-200 border-blue-300"
+                : "bg-gray-100 border-gray-200",
+              "py-1 hover:bg-white rounded-sm border border-gray-200 cursor-pointer w-full text-center duration-300 ease-in-out"
+            )}
+          >
+            Ultra
+          </div>
+          <div
+            onClick={() => setSelectedStyle("wide")}
+            className={cn(
+              selectedStyle === "wide"
+                ? "bg-blue-200 border-blue-300"
+                : "bg-gray-100 border-gray-200",
+              "py-1 hover:bg-white rounded-sm border border-gray-200 cursor-pointer w-full text-center duration-300 ease-in-out"
+            )}
+          >
+            Wide
+          </div>
+          <div
+            onClick={() => setSelectedStyle("pc")}
+            className={cn(
+              selectedStyle === "pc"
+                ? "bg-blue-200 border-blue-300"
+                : "bg-gray-100 border-gray-200",
+              "py-1 hover:bg-white rounded-sm border border-gray-200 cursor-pointer w-full text-center duration-300 ease-in-out"
+            )}
+          >
+            PC
+          </div>
+          <div
+            onClick={() => setSelectedStyle("tab")}
+            className={cn(
+              selectedStyle === "tab"
+                ? "bg-blue-200 border-blue-300"
+                : "bg-gray-100 border-gray-200",
+              "py-1 hover:bg-white rounded-sm border border-gray-200 cursor-pointer w-full text-center duration-300 ease-in-out"
+            )}
+          >
+            Tab
+          </div>
+          <div
+            onClick={() => setSelectedStyle("mob")}
+            className={cn(
+              selectedStyle === "mob"
+                ? "bg-blue-200 border-blue-300"
+                : "bg-gray-100 border-gray-200",
+              "py-1 hover:bg-white rounded-sm border border-gray-200 cursor-pointer w-full text-center duration-300 ease-in-out"
+            )}
+          >
+            Mob
+          </div>
+        </div>
+        <div className="pt-2">
           <StyleGenerator
-            value={selectedTag.pcStyle}
-            onChange={(value) => {
-              setStyle(value, "pc");
+            label={
+              selectedStyle === "ultra"
+                ? "Ultra Wide Screen"
+                : selectedStyle === "wide"
+                ? "Wide Screen"
+                : selectedStyle === "pc"
+                ? "PC Screen"
+                : selectedStyle === "tab"
+                ? "Tablet Screen"
+                : selectedStyle === "mob"
+                ? "Mobile Screen"
+                : "PC Screen"
+            }
+            style={selectedTag[`${selectedStyle}Style`]}
+            onChange={(style) => {
+              setStyle(style, selectedStyle);
             }}
           />
-        </TabsContent>
-        <TabsContent value="wide-screen">
-          <StyleGenerator
-            value={selectedTag.wideStyle}
-            onChange={(value) => {
-              setStyle(value, "wide");
-            }}
-          />
-        </TabsContent>
-        <TabsContent value="ultra-screen">
-          <StyleGenerator
-            value={selectedTag.ultraStyle}
-            onChange={(value) => {
-              setStyle(value, "ultra");
-            }}
-          />
-        </TabsContent>
-        <TabsContent value="tablet-screen">
-          <StyleGenerator
-            value={selectedTag.tabStyle}
-            onChange={(value) => {
-              setStyle(value, "tab");
-            }}
-          />
-        </TabsContent>
-        <TabsContent value="mobile-screen">
-          <StyleGenerator
-            value={selectedTag.mobStyle}
-            onChange={(value) => {
-              setStyle(value, "mob");
-            }}
-          />
-        </TabsContent>
-      </Tabs>
+        </div>
+      </div>
     </div>
   );
 });
+
+TagProperties.displayName = "TagProperties";
+export default TagProperties;

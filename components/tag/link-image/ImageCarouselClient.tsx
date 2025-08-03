@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { memo } from "react";
 import Autoplay from "embla-carousel-autoplay";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import {
@@ -15,7 +15,7 @@ import { DeviceType } from "../device";
 const ImageCarouselClient: React.FC<{
   imageCarousel: ImageCarousel;
   deviceType: DeviceType;
-}> = ({ imageCarousel, deviceType }) => {
+}> = memo(({ imageCarousel, deviceType }) => {
   const { linkImages } = imageCarousel;
   const [api, setApi] = React.useState<CarouselApi>();
   const [scrollable, setScrollable] = React.useState({
@@ -106,6 +106,7 @@ const ImageCarouselClient: React.FC<{
       )}
     </div>
   );
-};
+});
 
+ImageCarouselClient.displayName = "ImageCarouselClient";
 export default ImageCarouselClient;

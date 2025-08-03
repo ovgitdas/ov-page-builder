@@ -159,6 +159,55 @@ export const backgroundValues = [
   "url('https://placehold.co/600x400/94a3b8/FFF/png')", // Repeat the image
 ] as const;
 
+export const colorValues = [
+  // Color Keywords
+  "red",
+  "green",
+  "blue",
+  "yellow",
+  "purple",
+  "orange",
+  "black",
+  "white",
+  "gray",
+  "cyan",
+  "magenta",
+  "transparent",
+  "currentcolor",
+
+  // Hex Codes
+  "#f1f5f9", // Tailwind gray-100
+  "#e2e8f0", // Tailwind gray-200
+  "#cbd5e1", // Tailwind gray-300
+  "#94a3b8", // Tailwind gray-400
+  "#64748b", // Tailwind gray-500
+  "#334155", // Tailwind gray-700
+  "#1e293b", // Tailwind gray-800
+  "#14b8a6", // Tailwind teal-500
+  "#f97316", // Tailwind orange-500
+  "#6366f1", // Tailwind indigo-500
+  "#ff5733",
+  "#33ff57",
+  "#3357ff",
+
+  // RGB and RGBA Formats
+  "rgb(255, 0, 0)",
+  "rgb(0, 128, 0)",
+  "rgb(51, 102, 204)",
+  "rgba(255, 0, 0, 0.5)",
+  "rgba(0, 128, 0, 0.7)",
+  "rgba(51, 102, 204, 0.3)",
+  "rgba(0, 0, 0, 0)",
+
+  // HSL and HSLA Formats
+  "hsl(0, 100%, 50%)", // Pure Red
+  "hsl(120, 100%, 25%)", // Dark Green
+  "hsl(240, 50%, 75%)", // Light Blue
+  "hsla(0, 100%, 50%, 0.5)",
+  "hsla(120, 100%, 25%, 0.7)",
+  "hsla(240, 50%, 75%, 0.3)",
+] as const;
+
 export interface Style {
   // Layout Properties
   display?: DisplayStyle;

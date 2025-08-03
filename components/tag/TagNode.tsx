@@ -91,5 +91,5 @@ const TagNode = memo(({ tag }: TagNodeProps) => {
     </div>
   );
 });
-
+TagNode.displayName = "TagNode";
 export default TagNode;

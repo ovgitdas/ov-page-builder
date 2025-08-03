@@ -98,7 +98,7 @@ export const useTagStore = create<{
   /** Moves a tag down in the tag hierarchy. */
   down: () => void;
   /** Sets the style for a tag. */
-  setStyle: (style: Style, deviceType: DeviceType) => void;
+  setStyle: (style: Style, deviceType: DeviceType) => Promise<void>;
   /** Changes the type of children for a tag. */
   changeChildrenType: (type: TagChildrenType) => void;
   /** Updates the children of a tag. */
@@ -335,18 +335,25 @@ export const useTagStore = create<{
     }
   },
 
-  setStyle(style: Style, deviceType: DeviceType) {
+  async setStyle(style: Style, deviceType: DeviceType) {
     const { page, selectedTag, history } = get();
     const _history = JSON.parse(JSON.stringify({ page, selectedTag }));
     if (!selectedTag) return;
     const { id } = selectedTag;
     const tag = findTag(id, [page.root]);
     if (!tag) return;
-    tag.pcStyle = deviceType === "pc" ? style : tag.pcStyle;
-    tag.wideStyle = deviceType === "wide" ? style : tag.wideStyle;
-    tag.ultraStyle = deviceType === "ultra" ? style : tag.ultraStyle;
-    tag.mobStyle = deviceType === "mob" ? style : tag.mobStyle;
-    tag.tabStyle = deviceType === "tab" ? style : tag.tabStyle;
+    tag.pcStyle =
+      deviceType === "pc" ? JSON.parse(JSON.stringify(style)) : tag.pcStyle;
+    tag.wideStyle =
+      deviceType === "wide" ? JSON.parse(JSON.stringify(style)) : tag.wideStyle;
+    tag.ultraStyle =
+      deviceType === "ultra"
+        ? JSON.parse(JSON.stringify(style))
+        : tag.ultraStyle;
+    tag.mobStyle =
+      deviceType === "mob" ? JSON.parse(JSON.stringify(style)) : tag.mobStyle;
+    tag.tabStyle =
+      deviceType === "tab" ? JSON.parse(JSON.stringify(style)) : tag.tabStyle;
     const _page = JSON.parse(JSON.stringify(page));
     const _selectedTag = findTag(id, [_page.root]);
     set({

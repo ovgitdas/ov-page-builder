@@ -6,15 +6,15 @@
 
 "use client";
 
-import React from "react";
+import React, { memo } from "react";
 import { Label } from "@/components/ui/label";
 import { FaPlus } from "react-icons/fa";
-import { LinkImageInput } from "./LinkImageInput";
+import LinkImageInput from "./LinkImageInput";
 import { useTagStore } from "../tag_zustand";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 
-const ImageCarouselForm: React.FC = () => {
+const ImageCarouselForm: React.FC = memo(() => {
   const { selectedTag, updateChildren } = useTagStore();
 
   const [selectedIndex, setSelectedIndex] = React.useState(0);
@@ -173,6 +173,6 @@ const ImageCarouselForm: React.FC = () => {
     );
   }
   return <></>;
-};
-
+});
+ImageCarouselForm.displayName = "ImageCarouselForm";
 export default ImageCarouselForm;

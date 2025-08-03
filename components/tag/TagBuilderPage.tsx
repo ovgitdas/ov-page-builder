@@ -5,9 +5,9 @@
 "use client";
 import React, { memo } from "react";
 import { useTagStore } from "./tag_zustand";
-import { TagProperties } from "./TagProperties";
+import TagProperties from "./TagProperties";
 import TagNode from "./TagNode";
-import { TagNavNode } from "./TagNavNode";
+import TagNavNode from "./TagNavNode";
 import ViewPort from "./ViewPort";
 
 /**
@@ -50,5 +50,5 @@ const TagBuilderPage: React.FC = memo(() => {
     </>
   );
 });
-
+TagBuilderPage.displayName = "TagBuilderPage";
 export default TagBuilderPage;

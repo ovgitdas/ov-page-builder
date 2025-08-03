@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, memo } from "react";
+import React, { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -8,114 +8,123 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FlexItemStyle, flexItem } from "./display-style-data";
+import {
+  FlexItemStyle,
+  flexItem,
+  flexGrowValues,
+  flexShrinkValues,
+  flexOrderValues,
+  flexBasisValues,
+} from "./display-style-data";
+import Card from "../Card";
+import DatalistInput from "../DatalistInput";
+import { deepEqual } from "../../util";
 
 const FlexItemStyleForm: React.FC<{
   style?: FlexItemStyle;
   onChange: (style: FlexItemStyle) => void;
-}> = memo(({ style, onChange }) => {
+}> = ({ style, onChange }) => {
   const [styleInput, setStyleInput] = useState<FlexItemStyle>({});
 
   useEffect(() => {
-    setStyleInput(style || {});
+    if (!deepEqual(style, styleInput)) {
+      setStyleInput(style || {});
+    }
   }, [style]);
 
-  const _setStyleInput = (newStyle: FlexItemStyle) => {
-    setStyleInput(newStyle);
-    onChange(newStyle);
-  };
+  useEffect(() => {
+    onChange(styleInput);
+  }, [styleInput]);
 
   return (
-    <div className="w-full max-w-4xl grid gap-8 md:grid-cols-2">
+    <Card>
       {/* Configuration Section */}
-      <Card className="rounded-xl shadow-lg border-gray-200">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-gray-800">
-            Flex Item Properties
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Flex Grow */}
-          <div className="space-y-2">
-            <Label>Flex Grow</Label>
-            <Input
-              value={styleInput.flexGrow || ""}
-              onChange={(e) =>
-                _setStyleInput({ ...styleInput, flexGrow: e.target.value })
-              }
-              placeholder="e.g., 1 or 0"
-            />
-          </div>
+      <div className="grid grid-cols-2 gap-1">
+        {/* Flex Grow */}
+        <div className="space-y-2">
+          <DatalistInput
+            id="flexGrow"
+            label="Grow"
+            value={styleInput.flexGrow || ""}
+            onChange={(value) =>
+              setStyleInput({ ...styleInput, flexGrow: value })
+            }
+            placeholder="e.g., 1 or 0"
+            options={flexGrowValues}
+          />
+        </div>
 
-          {/* Flex Shrink */}
-          <div className="space-y-2">
-            <Label>Flex Shrink</Label>
-            <Input
-              value={styleInput.flexShrink || ""}
-              onChange={(e) =>
-                _setStyleInput({
-                  ...styleInput,
-                  flexShrink: e.target.value,
-                })
-              }
-              placeholder="e.g., 1 or 0"
-            />
-          </div>
+        {/* Flex Shrink */}
+        <div className="space-y-2">
+          <DatalistInput
+            id="flexShrink"
+            label="Shrink"
+            value={styleInput.flexShrink || ""}
+            onChange={(value) =>
+              setStyleInput({
+                ...styleInput,
+                flexShrink: value,
+              })
+            }
+            placeholder="e.g., 1 or 0"
+            options={flexShrinkValues}
+          />
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-1">
+        {/* Flex Basis */}
+        <div className="space-y-2">
+          <DatalistInput
+            id="flexBasis"
+            label="Basis"
+            value={styleInput.flexBasis || ""}
+            onChange={(value) =>
+              setStyleInput({
+                ...styleInput,
+                flexBasis: value,
+              })
+            }
+            placeholder="e.g., auto or 200px"
+            options={flexBasisValues}
+          />
+        </div>
 
-          {/* Flex Basis */}
-          <div className="space-y-2">
-            <Label>Flex Basis</Label>
-            <Input
-              value={styleInput.flexBasis || ""}
-              onChange={(e) =>
-                _setStyleInput({
-                  ...styleInput,
-                  flexBasis: e.target.value,
-                })
-              }
-              placeholder="e.g., auto or 200px"
-            />
-          </div>
+        {/* Order */}
+        <div className="space-y-2">
+          <DatalistInput
+            id="order"
+            label="Order"
+            value={styleInput.order || ""}
+            onChange={(value) => setStyleInput({ ...styleInput, order: value })}
+            placeholder="e.g., 1"
+            options={flexOrderValues}
+          />
+        </div>
+      </div>
 
-          {/* Order */}
-          <div className="space-y-2">
-            <Label>Order</Label>
-            <Input
-              value={styleInput.order || ""}
-              onChange={(e) =>
-                _setStyleInput({ ...styleInput, order: e.target.value })
-              }
-              placeholder="e.g., 1"
-            />
-          </div>
-
-          {/* Align Self */}
-          <div className="space-y-2">
-            <Label>Align Self</Label>
-            <Select
-              onValueChange={(value: (typeof flexItem.alignSelf)[number]) =>
-                _setStyleInput({ ...styleInput, alignSelf: value })
-              }
-              defaultValue={styleInput.alignSelf || "auto"}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select an alignment" />
-              </SelectTrigger>
-              <SelectContent>
-                {flexItem.alignSelf.map((align) => (
-                  <SelectItem key={align} value={align}>
-                    {align}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+      {/* Align Self */}
+      <div className="space-y-2">
+        <Label className="text-xs">Align Self</Label>
+        <Select
+          onValueChange={(value: (typeof flexItem.alignSelf)[number]) =>
+            setStyleInput({ ...styleInput, alignSelf: value })
+          }
+          defaultValue={styleInput.alignSelf || "auto"}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select an alignment" />
+          </SelectTrigger>
+          <SelectContent>
+            {flexItem.alignSelf.map((align) => (
+              <SelectItem key={align} value={align}>
+                {align}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+    </Card>
   );
-});
+};
 
 export default FlexItemStyleForm;
