@@ -281,16 +281,10 @@ export interface DisplayStyle {
   display?: (typeof display)[number];
   flex?: FlexStyle;
   grid?: GridStyle;
-  //if parent is flex
-  flexItem?: FlexItemStyle;
-  //if parent is grid
-  gridItem?: GridItemStyle;
 }
 
 export const displayStyle = (display: DisplayStyle) => `
-display: ${display.display}; 
-${display.flexItem ? flexItemStyle(display.flexItem) : ""}
-${display.gridItem ? gridItemStyle(display.gridItem) : ""}
+display: ${display.display};
 ${display.flex ? flexStyle(display.flex) : ""}
 ${display.grid ? gridStyle(display.grid) : ""}
 `;

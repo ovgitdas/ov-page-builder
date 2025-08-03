@@ -32,6 +32,8 @@ import DatalistInput from "./DatalistInput";
 import DisplayStyleForm from "./display-style/DisplayStyleForm";
 import Card from "./Card";
 import { deepEqual } from "../util";
+import FlexItemStyleForm from "./display-style/FlexItemStyleForm";
+import GridItemStyleForm from "./display-style/GridItemStyleForm";
 
 const StyleGenerator: React.FC<{
   label: string;
@@ -41,19 +43,18 @@ const StyleGenerator: React.FC<{
   const [styleInput, setStyleInput] = useState<Style>({});
 
   useEffect(() => {
-    if (!deepEqual(style, styleInput)) {
-      setStyleInput(style || {});
+    const _style = style || {};
+    if (!deepEqual(_style, styleInput)) {
+      setStyleInput(_style || {});
     }
   }, [style]);
 
-  useEffect(() => {
-    onChange(styleInput);
-  }, [styleInput]);
-
   // A generic onChange handler for Select fields
   const _setStyleInput = (value: any, key: keyof Style) => {
-    const newStyle = { ...styleInput, [key]: value };
-    setStyleInput(newStyle);
+    const _styleInput = { ...styleInput, [key]: value };
+    const _style = style || {};
+    if (!deepEqual(_styleInput, styleInput)) setStyleInput(_styleInput);
+    if (!deepEqual(_styleInput, _style)) onChange(_styleInput);
   };
 
   return (
@@ -61,20 +62,13 @@ const StyleGenerator: React.FC<{
       <div className="text-center font-extrabold text-gray-400">
         {label} Style
       </div>
+      <DisplayStyleForm
+        style={styleInput.display}
+        onChange={(style) => {
+          _setStyleInput(style, "display");
+        }}
+      />
       <Accordion type="single" collapsible className="w-full" defaultValue="">
-        <AccordionItem value="layout" className="border-none">
-          <AccordionTrigger className="font-bold text-gray-500 hover:no-underline p-2">
-            Layout Properties
-          </AccordionTrigger>
-          <AccordionContent>
-            <DisplayStyleForm
-              style={styleInput.display}
-              onChange={(style) => {
-                _setStyleInput(style, "display");
-              }}
-            />
-          </AccordionContent>
-        </AccordionItem>
         <AccordionItem value="size" className="border-none">
           <AccordionTrigger className="font-bold text-gray-500 hover:no-underline p-2">
             Size Properties
@@ -422,6 +416,30 @@ const StyleGenerator: React.FC<{
                 </Select>
               </div>
             </Card>
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="flex-item" className="border-none">
+          <AccordionTrigger className="font-bold text-gray-400 hover:no-underline p-2">
+            Only if parent is flex
+          </AccordionTrigger>
+          <AccordionContent>
+            {/* FlexItemStyle */}
+            <FlexItemStyleForm
+              style={styleInput.flexItem}
+              onChange={(style) => _setStyleInput(style, "flexItem")}
+            />
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="grid-item" className="border-none">
+          <AccordionTrigger className="font-bold text-gray-400 hover:no-underline p-2">
+            Only if parent is grid
+          </AccordionTrigger>
+          <AccordionContent>
+            {/* GridItemStyle */}
+            <GridItemStyleForm
+              style={styleInput.gridItem}
+              onChange={(style) => _setStyleInput(style, "gridItem")}
+            />
           </AccordionContent>
         </AccordionItem>
       </Accordion>

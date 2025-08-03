@@ -20,16 +20,17 @@ const FlexStyleForm: React.FC<{
   const [styleInput, setStyleInput] = useState<FlexStyle>({});
 
   useEffect(() => {
-    if (!deepEqual(style, styleInput)) {
-      setStyleInput(style || {});
+    const _style = style || {};
+    if (!deepEqual(_style, styleInput)) {
+      setStyleInput(_style || {});
     }
   }, [style]);
 
-  useEffect(() => {
-    onChange(styleInput);
-  }, [styleInput]);
-
-  console.log("flex-style");
+  const _setStyleInput = async (_styleInput: FlexStyle) => {
+    const _style = style || {};
+    if (!deepEqual(_styleInput, styleInput)) setStyleInput(_styleInput);
+    if (!deepEqual(_styleInput, _style)) onChange(_styleInput);
+  };
 
   return (
     <Card>
@@ -40,7 +41,7 @@ const FlexStyleForm: React.FC<{
           <Label className="text-xs">Direction</Label>
           <Select
             onValueChange={(value: (typeof flex.flexDirection)[number]) =>
-              setStyleInput({ ...styleInput, flexDirection: value })
+              _setStyleInput({ ...styleInput, flexDirection: value })
             }
             defaultValue={(styleInput ? styleInput.flexDirection : "") || ""}
           >
@@ -62,7 +63,7 @@ const FlexStyleForm: React.FC<{
           <Label className="text-xs">Wrap</Label>
           <Select
             onValueChange={(value: (typeof flex.flexWrap)[number]) =>
-              setStyleInput({ ...styleInput, flexWrap: value })
+              _setStyleInput({ ...styleInput, flexWrap: value })
             }
             defaultValue={(styleInput ? styleInput.flexWrap : "") || ""}
           >
@@ -85,7 +86,7 @@ const FlexStyleForm: React.FC<{
           <Label className="text-xs">Justify Content</Label>
           <Select
             onValueChange={(value: (typeof flex.justifyContent)[number]) =>
-              setStyleInput({ ...styleInput, justifyContent: value })
+              _setStyleInput({ ...styleInput, justifyContent: value })
             }
             defaultValue={(styleInput ? styleInput.justifyContent : "") || ""}
           >
@@ -107,7 +108,7 @@ const FlexStyleForm: React.FC<{
           <Label className="text-xs">Align Items</Label>
           <Select
             onValueChange={(value: (typeof flex.alignItems)[number]) =>
-              setStyleInput({ ...styleInput, alignItems: value })
+              _setStyleInput({ ...styleInput, alignItems: value })
             }
             defaultValue={(styleInput ? styleInput.alignItems : "") || ""}
           >
@@ -130,7 +131,7 @@ const FlexStyleForm: React.FC<{
           <Label className="text-xs">Align Content</Label>
           <Select
             onValueChange={(value: (typeof flex.alignContent)[number]) =>
-              setStyleInput({ ...styleInput, alignContent: value })
+              _setStyleInput({ ...styleInput, alignContent: value })
             }
             defaultValue={(styleInput ? styleInput.alignContent : "") || ""}
           >
@@ -153,7 +154,7 @@ const FlexStyleForm: React.FC<{
             id="gap"
             label="Gap"
             value={styleInput.gap || ""}
-            onChange={(value) => setStyleInput({ ...styleInput, gap: value })}
+            onChange={(value) => _setStyleInput({ ...styleInput, gap: value })}
             placeholder="e.g., 16px or 1rem"
           />
         </div>
@@ -166,7 +167,7 @@ const FlexStyleForm: React.FC<{
             label="Grow"
             value={styleInput.flexGrow || ""}
             onChange={(value) =>
-              setStyleInput({ ...styleInput, flexGrow: value })
+              _setStyleInput({ ...styleInput, flexGrow: value })
             }
             placeholder="e.g., 1 or 0"
           />
@@ -179,7 +180,7 @@ const FlexStyleForm: React.FC<{
             label="Shrink"
             value={styleInput.flexShrink || ""}
             onChange={(value) =>
-              setStyleInput({ ...styleInput, flexShrink: value })
+              _setStyleInput({ ...styleInput, flexShrink: value })
             }
             placeholder="e.g., 1 or 0"
           />

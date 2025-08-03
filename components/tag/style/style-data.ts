@@ -1,4 +1,11 @@
-import { DisplayStyle, displayStyle } from "./display-style/display-style-data";
+import {
+  DisplayStyle,
+  FlexItemStyle,
+  GridItemStyle,
+  displayStyle,
+  flexItemStyle,
+  gridItemStyle,
+} from "./display-style/display-style-data";
 
 export const textAlignValues = ["left", "right", "center", "justify"] as const;
 export const borderStyleValues = [
@@ -244,9 +251,16 @@ export interface Style {
   borderColor?: string;
   borderRadius?: (typeof borderRadiusValues)[number];
   boxShadow?: (typeof boxShadowValues)[number];
+
+  //if parent is flex
+  flexItem?: FlexItemStyle;
+  //if parent is grid
+  gridItem?: GridItemStyle;
 }
 
 export const styleGenerator = (style: Style) => `
+  ${style.flexItem ? flexItemStyle(style.flexItem) : ""}
+  ${style.gridItem ? gridItemStyle(style.gridItem) : ""}
   ${style.display ? `${displayStyle(style.display)}` : ""}
   ${style.width ? `width: ${style.width};` : ""}
   ${style.maxWidth ? `max-width: ${style.maxWidth};` : ""}

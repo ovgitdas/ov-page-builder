@@ -16,14 +16,22 @@ interface DatalistInputProps {
 const DatalistInput: React.FC<DatalistInputProps> = memo(
   ({ label, value, onChange, placeholder, options, id, type }) => {
     const [data, setData] = useState(value);
+    const [timer, setTimer] = useState<NodeJS.Timeout>();
 
     useEffect(() => {
       if (value !== data) setData(value);
     }, [value]);
 
-    const _setData = async (data: string) => {
-      setData(data);
-      onChange(data);
+    const _setData = async (_data: string) => {
+      if (data !== _data) setData(_data);
+      if (value !== _data) {
+        clearTimeout(timer);
+        setTimer(
+          setTimeout(() => {
+            onChange(_data);
+          }, 500)
+        );
+      }
     };
 
     return (

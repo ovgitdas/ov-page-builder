@@ -27,14 +27,17 @@ const FlexItemStyleForm: React.FC<{
   const [styleInput, setStyleInput] = useState<FlexItemStyle>({});
 
   useEffect(() => {
-    if (!deepEqual(style, styleInput)) {
-      setStyleInput(style || {});
+    const _style = style || {};
+    if (!deepEqual(_style, styleInput)) {
+      setStyleInput(_style || {});
     }
   }, [style]);
 
-  useEffect(() => {
-    onChange(styleInput);
-  }, [styleInput]);
+  const _setStyleInput = async (_styleInput: FlexItemStyle) => {
+    const _style = style || {};
+    if (!deepEqual(_styleInput, styleInput)) setStyleInput(_styleInput);
+    if (!deepEqual(_styleInput, _style)) onChange(_styleInput);
+  };
 
   return (
     <Card>
@@ -47,7 +50,7 @@ const FlexItemStyleForm: React.FC<{
             label="Grow"
             value={styleInput.flexGrow || ""}
             onChange={(value) =>
-              setStyleInput({ ...styleInput, flexGrow: value })
+              _setStyleInput({ ...styleInput, flexGrow: value })
             }
             placeholder="e.g., 1 or 0"
             options={flexGrowValues}
@@ -61,7 +64,7 @@ const FlexItemStyleForm: React.FC<{
             label="Shrink"
             value={styleInput.flexShrink || ""}
             onChange={(value) =>
-              setStyleInput({
+              _setStyleInput({
                 ...styleInput,
                 flexShrink: value,
               })
@@ -79,7 +82,7 @@ const FlexItemStyleForm: React.FC<{
             label="Basis"
             value={styleInput.flexBasis || ""}
             onChange={(value) =>
-              setStyleInput({
+              _setStyleInput({
                 ...styleInput,
                 flexBasis: value,
               })
@@ -95,7 +98,9 @@ const FlexItemStyleForm: React.FC<{
             id="order"
             label="Order"
             value={styleInput.order || ""}
-            onChange={(value) => setStyleInput({ ...styleInput, order: value })}
+            onChange={(value) =>
+              _setStyleInput({ ...styleInput, order: value })
+            }
             placeholder="e.g., 1"
             options={flexOrderValues}
           />
@@ -107,7 +112,7 @@ const FlexItemStyleForm: React.FC<{
         <Label className="text-xs">Align Self</Label>
         <Select
           onValueChange={(value: (typeof flexItem.alignSelf)[number]) =>
-            setStyleInput({ ...styleInput, alignSelf: value })
+            _setStyleInput({ ...styleInput, alignSelf: value })
           }
           defaultValue={styleInput.alignSelf || "auto"}
         >

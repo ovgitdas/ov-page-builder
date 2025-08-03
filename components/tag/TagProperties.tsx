@@ -261,27 +261,25 @@ const TagProperties: React.FC = memo(() => {
             Mob
           </div>
         </div>
-        <div className="pt-2">
-          <StyleGenerator
-            label={
-              selectedStyle === "ultra"
-                ? "Ultra Wide Screen"
-                : selectedStyle === "wide"
-                ? "Wide Screen"
-                : selectedStyle === "pc"
-                ? "PC Screen"
-                : selectedStyle === "tab"
-                ? "Tablet Screen"
-                : selectedStyle === "mob"
-                ? "Mobile Screen"
-                : "PC Screen"
-            }
-            style={selectedTag[`${selectedStyle}Style`]}
-            onChange={(style) => {
-              setStyle(style, selectedStyle);
-            }}
-          />
-        </div>
+        <StyleGenerator
+          label={
+            selectedStyle === "ultra"
+              ? "Ultra Wide Screen"
+              : selectedStyle === "wide"
+              ? "Wide Screen"
+              : selectedStyle === "pc"
+              ? "PC Screen"
+              : selectedStyle === "tab"
+              ? "Tablet Screen"
+              : selectedStyle === "mob"
+              ? "Mobile Screen"
+              : "PC Screen"
+          }
+          style={selectedTag[`${selectedStyle}Style`]}
+          onChange={(style) => {
+            setStyle(style, selectedStyle);
+          }}
+        />
       </div>
     </div>
   );

@@ -12,14 +12,6 @@ import { DisplayStyle, display } from "./display-style-data";
 import FlexStyleForm from "./FlexStyleForm";
 import GridStyleForm from "./GridStyleForm";
 import Card from "../Card";
-import FlexItemStyleForm from "./FlexItemStyleForm";
-import GridItemStyleForm from "./GridItemStyleForm";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import { deepEqual } from "../../util";
 
 const DisplayStyleForm: React.FC<{
@@ -29,56 +21,27 @@ const DisplayStyleForm: React.FC<{
   const [styleInput, setStyleInput] = useState<DisplayStyle>({});
 
   useEffect(() => {
-    if (!deepEqual(style, styleInput)) {
-      setStyleInput(style || {});
+    const _style = style || {};
+    if (!deepEqual(_style, styleInput)) {
+      setStyleInput(_style || {});
     }
   }, [style]);
 
-  useEffect(() => {
-    onChange(styleInput);
-  }, [styleInput]);
-
-  console.log("deisplay-style");
+  const _setStyleInput = async (_styleInput: DisplayStyle) => {
+    const _style = style || {};
+    if (!deepEqual(_styleInput, styleInput)) setStyleInput(_styleInput);
+    if (!deepEqual(_styleInput, _style)) onChange(_styleInput);
+  };
 
   return (
     <div className="flex flex-col gap-2">
-      <Accordion type="single" collapsible className="w-full" defaultValue="">
-        <AccordionItem value="flex-item" className="border-none">
-          <AccordionTrigger className="font-bold text-gray-400 hover:no-underline p-2">
-            Only if parent is flex
-          </AccordionTrigger>
-          <AccordionContent>
-            {/* FlexItemStyle */}
-            <FlexItemStyleForm
-              style={styleInput.flexItem}
-              onChange={(style) =>
-                setStyleInput({ ...styleInput, flexItem: style })
-              }
-            />
-          </AccordionContent>
-        </AccordionItem>
-        <AccordionItem value="grid-item" className="border-none">
-          <AccordionTrigger className="font-bold text-gray-400 hover:no-underline p-2">
-            Only if parent is grid
-          </AccordionTrigger>
-          <AccordionContent>
-            {/* GridItemStyle */}
-            <GridItemStyleForm
-              style={styleInput.gridItem}
-              onChange={(style) =>
-                setStyleInput({ ...styleInput, gridItem: style })
-              }
-            />
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
       <Card>
         {/* DisplayStyle */}
         <div className="space-y-2">
           <Label className="text-xs">Display</Label>
           <Select
             onValueChange={(value: (typeof display)[number]) =>
-              setStyleInput({ ...styleInput, display: value })
+              _setStyleInput({ ...styleInput, display: value })
             }
             defaultValue={styleInput.display}
             value={styleInput.display}
@@ -98,7 +61,7 @@ const DisplayStyleForm: React.FC<{
         {styleInput.display === "flex" ? (
           <FlexStyleForm
             style={styleInput.flex}
-            onChange={(style) => setStyleInput({ ...styleInput, flex: style })}
+            onChange={(style) => _setStyleInput({ ...styleInput, flex: style })}
           />
         ) : (
           <></>
@@ -106,7 +69,7 @@ const DisplayStyleForm: React.FC<{
         {styleInput.display === "grid" ? (
           <GridStyleForm
             style={styleInput.grid}
-            onChange={(style) => setStyleInput({ ...styleInput, grid: style })}
+            onChange={(style) => _setStyleInput({ ...styleInput, grid: style })}
           />
         ) : (
           <></>

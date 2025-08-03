@@ -25,14 +25,17 @@ const GridItemStyleForm: React.FC<{
   const [styleInput, setStyleInput] = useState<GridItemStyle>({});
 
   useEffect(() => {
-    if (!deepEqual(style, styleInput)) {
-      setStyleInput(style || {});
+    const _style = style || {};
+    if (!deepEqual(_style, styleInput)) {
+      setStyleInput(_style || {});
     }
   }, [style]);
 
-  useEffect(() => {
-    onChange(styleInput);
-  }, [styleInput]);
+  const _setStyleInput = async (_styleInput: GridItemStyle) => {
+    const _style = style || {};
+    if (!deepEqual(_styleInput, styleInput)) setStyleInput(_styleInput);
+    if (!deepEqual(_styleInput, _style)) onChange(_styleInput);
+  };
 
   return (
     <Card>
@@ -45,7 +48,7 @@ const GridItemStyleForm: React.FC<{
             label="Column"
             value={styleInput.gridColumn || ""}
             onChange={(value) =>
-              setStyleInput({
+              _setStyleInput({
                 ...styleInput,
                 gridColumn: value,
               })
@@ -62,7 +65,7 @@ const GridItemStyleForm: React.FC<{
             label="Row"
             value={styleInput.gridRow || ""}
             onChange={(value) =>
-              setStyleInput({ ...styleInput, gridRow: value })
+              _setStyleInput({ ...styleInput, gridRow: value })
             }
             placeholder="e.g., 1 / 3"
             options={gridRowValues}
@@ -75,7 +78,7 @@ const GridItemStyleForm: React.FC<{
           <Label className="text-xs">Justify Self</Label>
           <Select
             onValueChange={(value: (typeof gridItem.justifySelf)[number]) =>
-              setStyleInput({ ...styleInput, justifySelf: value })
+              _setStyleInput({ ...styleInput, justifySelf: value })
             }
             defaultValue={styleInput.justifySelf || "stretch"}
           >
@@ -97,7 +100,7 @@ const GridItemStyleForm: React.FC<{
           <Label className="text-xs">Align Self</Label>
           <Select
             onValueChange={(value: (typeof gridItem.alignSelf)[number]) =>
-              setStyleInput({ ...styleInput, alignSelf: value })
+              _setStyleInput({ ...styleInput, alignSelf: value })
             }
             defaultValue={styleInput.alignSelf || "stretch"}
           >
